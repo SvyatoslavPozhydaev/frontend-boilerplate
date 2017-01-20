@@ -172,7 +172,7 @@ gulp.task('watch:fonts', ['fonts'], function (done) {
 
 gulp.task('browserSync', function() {
     browserSync.init({
-        proxy: "vizianclub.cabinet/"
+        proxy: "YOR LOCAL DOMAIN"
     });
 });
 

@@ -199,9 +199,7 @@ gulp.task('build', [
     'html',
     'images',
     'fonts'
-], function(){
-	gulp.start('version')
-});
+]);
 
 gulp.task('dev', ['build'], function(){
 	gulp.start('watch')
