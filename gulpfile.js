@@ -74,6 +74,7 @@ gulp.task('styles:vendor', function () {
 
 gulp.task('styles:application', function () {
     return gulp.src(paths.styles.input)
+        .pipe(sourcemaps.init())
         .pipe(
 			sass({
 				includePaths: [
@@ -84,6 +85,7 @@ gulp.task('styles:application', function () {
 		)
         .pipe(autoprefixer({browsers: ['> 1%'], cascade: false}))
         .pipe(cleancss())
+        .pipe(sourcemaps.write('../map'))
         .pipe(gulp.dest(paths.styles.output))
         .pipe(browserSync.stream());
 });
@@ -99,6 +101,7 @@ gulp.task('scripts:vendor', function () {
 
 gulp.task('scripts:application', function () {
     return gulp.src(paths.scripts.application)
+        .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['es2015', 'stage-0'],
             plugins: [
@@ -123,6 +126,7 @@ gulp.task('scripts:application', function () {
         .pipe(add.prepend(require.resolve('babel-polyfill/dist/polyfill')))
         .pipe(concat('application.js'))
         .pipe(uglify())
+        .pipe(sourcemaps.write('../map'))
         .pipe(gulp.dest(paths.scripts.output));
 });
 
@@ -199,9 +203,7 @@ gulp.task('build', [
     'html',
     'images',
     'fonts'
-], function(){
-	gulp.start('version')
-});
+]);
 
 gulp.task('dev', ['build'], function(){
 	gulp.start('watch')

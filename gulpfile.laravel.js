@@ -7,13 +7,11 @@ const autoprefixer 	= require('gulp-autoprefixer');
 const babel 		= require('gulp-babel');
 const include 		= require('gulp-include');
 const uglify 		= require('gulp-uglify');
-const html 			= require('gulp-html-extend');
 const concat        = require('gulp-concat');
 const sourcemaps    = require('gulp-sourcemaps');
 const commonJs      = require('gulp-wrap-commonjs');
 const add           = require('gulp-add-src');
 const browserSync 	= require('browser-sync');
-const ftp 			= require('vinyl-ftp');
 const bourbon       = require('node-bourbon');
 const rev			= require('gulp-rev');
 const revDel 		= require('rev-del');
@@ -55,11 +53,6 @@ const paths = {
         input: images + '**/*.*',
         output: build + 'images/'
     },
-    html: {
-        watch: resources + 'views/**/*.html',
-        input: resources + 'views/pages/*.html',
-        output: build
-    },
     fonts: {
         watch: resources + 'fonts/**/*',
         input: resources + 'fonts/**/*',
@@ -76,6 +69,7 @@ gulp.task('styles:vendor', function () {
 
 gulp.task('styles:application', function () {
     return gulp.src(paths.styles.input)
+        .pipe(sourcemaps.init())
         .pipe(
 			sass({
 				includePaths: [
@@ -86,6 +80,7 @@ gulp.task('styles:application', function () {
 		)
         .pipe(autoprefixer({browsers: ['> 1%'], cascade: false}))
         .pipe(cleancss())
+        .pipe(sourcemaps.write('../map'))
         .pipe(gulp.dest(paths.styles.output))
         .pipe(browserSync.stream());
 });
@@ -101,6 +96,7 @@ gulp.task('scripts:vendor', function () {
 
 gulp.task('scripts:application', function () {
     return gulp.src(paths.scripts.application)
+        .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['es2015', 'stage-0'],
             plugins: [
@@ -125,6 +121,7 @@ gulp.task('scripts:application', function () {
         .pipe(add.prepend(require.resolve('babel-polyfill/dist/polyfill')))
         .pipe(concat('application.js'))
         .pipe(uglify())
+        .pipe(sourcemaps.write('../map'))
         .pipe(gulp.dest(paths.scripts.output));
 });
 
@@ -157,10 +154,6 @@ gulp.task('fonts', function () {
         .pipe(gulp.dest(paths.fonts.output))
 });
 
-gulp.task('watch:html', ['html'], function (done) {
-    browserSync.reload();
-    done();
-});
 gulp.task('watch:images', ['images'], function (done) {
     browserSync.reload();
     done();
@@ -172,7 +165,7 @@ gulp.task('watch:fonts', ['fonts'], function (done) {
 
 gulp.task('browserSync', function() {
     browserSync.init({
-        proxy: "vizianclub.cabinet/"
+        proxy: "YOUR_LOCAL_DOMAIN/"
     });
 });
 
@@ -200,8 +193,8 @@ gulp.task('watch', ['browserSync'], function() {
     // images
     gulp.watch(paths.images.watch, ['watch:images']);
 
-    // html
-    gulp.watch(paths.html.watch, ['watch:html']);
+    // php
+    gulp.watch(['app/**/*.php','resources/**/*.php'], browserSync.reload);
 
     // fonts
     gulp.watch(paths.fonts.watch, ['watch:fonts']);
@@ -210,7 +203,6 @@ gulp.task('watch', ['browserSync'], function() {
 gulp.task('build', [
     'styles',
     'scripts',
-    'html',
     'images',
     'fonts'
 ], function () {
