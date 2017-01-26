@@ -15,6 +15,7 @@ const browserSync 	= require('browser-sync');
 const bourbon       = require('node-bourbon');
 const rev			= require('gulp-rev');
 const revDel 		= require('rev-del');
+const gutil         = require('gulp-util');
 
 // CONFIG BASE PATH
 const resources = 'resources/';
@@ -103,6 +104,11 @@ gulp.task('scripts:application', function () {
                 'transform-es2015-modules-commonjs',
                 'transform-decorators-legacy'
             ]
+        })
+        .on('error', function (error) {
+            gutil.log(gutil.colors.red('[Compilation Error]'));
+            gutil.log(gutil.colors.red(error));
+            this.emit('end');
         }))
         .pipe(commonJs({
             pathModifier: path => {

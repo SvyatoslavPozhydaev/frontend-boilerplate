@@ -26,6 +26,7 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.4.0",
     "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.8",
     "gulp-wrap-commonjs": "^0.1.14",
     "node-bourbon": "^4.2.8",
     "vinyl-ftp": "^0.5.0"

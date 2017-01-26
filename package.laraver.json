@@ -26,6 +26,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.7.3",
     "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.8",
     "gulp-wrap-commonjs": "^0.1.14",
     "node-bourbon": "^4.2.8",
     "rev-del": "^1.0.5"
