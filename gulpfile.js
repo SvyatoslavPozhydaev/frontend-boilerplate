@@ -24,6 +24,7 @@ const build     = 'build/';
 const styles    = assets + 'stylesheets/';
 const scripts   = assets + 'javascripts/';
 const images    = assets + 'images/';
+conts fonts 	= assets + 'fonts/';
 
 // CONFIG ALL PATH
 const paths = {
@@ -60,8 +61,16 @@ const paths = {
         output: build
     },
     fonts: {
-        watch: resources + 'fonts/**/*',
-        input: resources + 'fonts/**/*',
+        watch: [
+			fonts + '**/*.otf',
+			fonts + '**/*.ttf',
+			fonts + '**/*.eot',
+			fonts + '**/*.woff',
+			fonts + '**/*.woff2',
+			fonts + '**/*.svg',
+			fonts + '**/*.css',
+		],
+        input: fonts + 'fonts/**/*.*',
         output: build + 'fonts/'
     }
 };
