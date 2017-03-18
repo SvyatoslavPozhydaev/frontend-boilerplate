@@ -17,24 +17,21 @@
     <link rel="shortcut icon" sizes="48x48" href="/images/favicon/favicon-48.png" type="image/png">
     <link rel="shortcut icon" sizes="64x64" href="/images/favicon/favicon-64.png" type="image/png">
 
-    <link rel="apple-touch-icon" sizes="64x64" href="/images/favicon//favicon-64.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon//touch-icon.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon//touch-icon-iphone.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon//touch-icon-ipad-pro.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon//touch-icon-iphone6-pluse.png">
+    <link rel="apple-touch-icon" sizes="64x64" href="/images/favicon/favicon-64.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/touch-icon.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/touch-icon-iphone.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/touch-icon-ipad-pro.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/touch-icon-iphone6-pluse.png">
 
     <link rel="stylesheet" href="./css/vendor.css">
     <link rel="stylesheet" href="./css/application.css">
 </head>
 <body>
-    <div class="wrapper" id="wrapper">
-        <div id="container">
-            <!-- @@placeholder = content -->
-        </div>
-    </div>
-    <div class="wrapper">
-        Footer
-    </div>
+{% include "shared/_header.html" %}
+
+{% block content %}{% endblock %}
+    
+{% include "shared/_footer.html" %}
 </body>
 <script type="text/javascript" src="./js/vendor.js"></script>
 <script type="text/javascript" src="./js/application.js"></script>

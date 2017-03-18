@@ -7,7 +7,6 @@ const autoprefixer 	= require('gulp-autoprefixer');
 const babel 		= require('gulp-babel');
 const include 		= require('gulp-include');
 const uglify 		= require('gulp-uglify');
-const html 			= require('gulp-html-extend');
 const concat        = require('gulp-concat');
 const sourcemaps    = require('gulp-sourcemaps');
 const commonJs      = require('gulp-wrap-commonjs');
@@ -16,6 +15,7 @@ const browserSync 	= require('browser-sync');
 const ftp 			= require('vinyl-ftp');
 const bourbon       = require('node-bourbon');
 const gutil         = require('gulp-util');
+const nunjucksRender 	= require('gulp-nunjucks-render');
 
 // CONFIG BASE PATH
 const resources = 'resources/';
@@ -24,7 +24,7 @@ const build     = 'build/';
 const styles    = assets + 'stylesheets/';
 const scripts   = assets + 'javascripts/';
 const images    = assets + 'images/';
-conts fonts 	= assets + 'fonts/';
+const fonts 	= assets + 'fonts/';
 
 // CONFIG ALL PATH
 const paths = {
@@ -74,6 +74,12 @@ const paths = {
         output: build + 'fonts/'
     }
 };
+
+function onError(error){
+	gutil.log(gutil.colors.red('[Compilation Error]'));
+	gutil.log(gutil.colors.red(error));
+	this.emit('end');
+}
 
 gulp.task('styles:vendor', function () {
     return gulp.src(paths.styles.vendor)
@@ -158,8 +164,11 @@ gulp.task('scripts', ['scripts:vendor', 'scripts:application']);
 
 gulp.task('html', function () {
     return gulp.src(paths.html.input)
-        .pipe(html({ annotations: true, verbose: false }))
-        .pipe(gulp.dest(paths.html.output))
+		.pipe(nunjucksRender({
+			path: resources + '/views/'
+		}).on('error', onError))
+        .pipe(gulp.dest(paths.html.output));
+		
 });
 
 gulp.task('images', function () {
