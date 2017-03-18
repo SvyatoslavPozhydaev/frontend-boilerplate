@@ -14,6 +14,7 @@ const add           = require('gulp-add-src');
 const browserSync 	= require('browser-sync');
 const ftp 			= require('vinyl-ftp');
 const bourbon       = require('node-bourbon');
+const reset         = require('node-reset-scss');
 const gutil         = require('gulp-util');
 const nunjucksRender 	= require('gulp-nunjucks-render');
 const rev			= require('gulp-rev');
@@ -96,7 +97,8 @@ gulp.task('styles:application', function () {
         .pipe(
 			sass({
 				includePaths: [
-					bourbon.includePaths
+					bourbon.includePaths,
+					reset.includePath
 				]
 			})
 			.on('error', sass.logError)
