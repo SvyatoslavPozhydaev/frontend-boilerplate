@@ -35,6 +35,7 @@
     "commonjs-require": "^1.4.6",
     "gulp-nunjucks-render": "^2.0.0",
     "gulp-rev": "^7.1.2",
+    "jquery": "^3.2.0",
     "node-reset-scss": "^1.0.1",
     "rev-del": "^1.0.5"
   }
