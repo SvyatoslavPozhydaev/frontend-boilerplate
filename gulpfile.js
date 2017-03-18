@@ -16,6 +16,8 @@ const ftp 			= require('vinyl-ftp');
 const bourbon       = require('node-bourbon');
 const gutil         = require('gulp-util');
 const nunjucksRender 	= require('gulp-nunjucks-render');
+const rev			= require('gulp-rev');
+const revDel 		= require('rev-del');
 
 // CONFIG BASE PATH
 const resources = 'resources/';
@@ -85,7 +87,7 @@ gulp.task('styles:vendor', function () {
     return gulp.src(paths.styles.vendor)
         .pipe(include())
         .pipe(gulp.dest(paths.styles.output))
-        .pipe(browserSync.stream());
+        .pipe(browserSync.stream({ match: "**/*.css" }));
 });
 
 gulp.task('styles:application', function () {
@@ -103,7 +105,16 @@ gulp.task('styles:application', function () {
         .pipe(cleancss())
         .pipe(sourcemaps.write('../map'))
         .pipe(gulp.dest(paths.styles.output))
-        .pipe(browserSync.stream());
+        .pipe(browserSync.stream({ match: "**/*.css" }));
+});
+
+gulp.task('watch:styles:vendor', ['styles:vendor'], function (done) {
+    // revVersion();
+    done();
+});
+gulp.task('watch:styles:application', ['styles:application'], function (done) {
+    // revVersion();
+    done();
 });
 
 gulp.task('styles', ['styles:vendor', 'styles:application']);
@@ -152,10 +163,12 @@ gulp.task('scripts:application', function () {
 });
 
 gulp.task('watch:scripts:vendor', ['scripts:vendor'], function (done) {
+    // revVersion();
     browserSync.reload();
     done();
 });
 gulp.task('watch:scripts:application', ['scripts:application'], function (done) {
+    // revVersion();
     browserSync.reload();
     done();
 });
@@ -200,6 +213,22 @@ gulp.task('browserSync', function() {
             baseDir: build,
         }
     });
+});
+
+const revVersion = function(){
+	return gulp.src([
+                 build + 'css/*.css',
+                 build + 'js/*.js'
+        ], {base: 'public'})
+        .pipe(rev())
+        .pipe(gulp.dest( build + 'build'))
+        .pipe(rev.manifest())
+		.pipe(revDel({ dest : build + 'build' }))
+        .pipe(gulp.dest( build + 'build'));
+}
+
+gulp.task( 'version' , function () {
+    return revVersion();
 });
 
 gulp.task('watch', ['browserSync'], function() {
