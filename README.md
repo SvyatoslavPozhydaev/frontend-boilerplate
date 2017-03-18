@@ -1,17 +1,18 @@
 ### Установка
 ```sh
-$ git clone
-$ cd my-project
+$ mkdir <project name>
+$ cd <project name>
+$ git init
+$ git remote add origin git@rscz.ru:pojidaev/gulp-frontend.git
+$ git pull origin master
 $ git remote rm origin
-$ npm install
+$ git checkout -b develop
+$ yarn install
 ```
 
-### Сборка проекта и запуск сервера
+### Команды gulp
 ```sh
-$ gulp dev
-```
-
-### Сборка проекта
-```sh
-$ gulp build
+$ gulp dev		<--- для разработки
+$ gulp build 	<--- для сборки 
+$ gulp deploy	<--- для деплоя ( предварительно установив доступы )
 ```
