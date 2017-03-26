@@ -133,7 +133,7 @@ gulp.task('scripts', function () {
             })
         )
         .bundle()
-        .on("error", gutil.log)
+        .on("error", onError)
         .pipe(vinylStream('application.js'))
         .pipe(vinylBuffer()) // for using other gulp plugins
         .pipe(sourcemaps.init({ loadMaps: true }))
