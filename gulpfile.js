@@ -224,12 +224,21 @@ gulp.task('watch', ['browserSync'], function() {
     gulp.watch(paths.fonts.watch, ['watch:fonts']);
 });
 
+gulp.task('server:config', function(){
+	return gulp.src( [
+			resources + 'server/**/*.*',
+			resources + 'server/.htaccess',
+		])
+		.pipe(gulp.dest( build ));
+});
+
 gulp.task('build', [
     'styles',
     'scripts',
     'html',
     'images',
-    'fonts'
+    'fonts',
+    'server:config'
 ]);
 
 gulp.task('dev', ['build'], function(){
