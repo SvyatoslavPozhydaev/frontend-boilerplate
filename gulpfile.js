@@ -60,8 +60,8 @@ const paths = {
         output: build + 'images/'
     },
     html: {
-        watch: resources + 'views/**/*.html',
-        input: resources + 'views/pages/*.html',
+        watch: resources + 'views/**/*.njk',
+        input: resources + 'views/pages/*.njk',
         output: build
     },
     fonts: {
