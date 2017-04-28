@@ -5,7 +5,7 @@
 $ mkdir <project name>
 $ cd <project name>
 $ git init
-$ git remote add origin git@rscz.ru:pojidaev/gulp-frontend.git
+$ git remote add origin <url to git repo>
 $ git pull origin master
 $ git remote rm origin
 $ git checkout -b develop
