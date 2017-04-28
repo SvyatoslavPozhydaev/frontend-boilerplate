@@ -19,8 +19,10 @@
 <body>
 {% include "shared/_header.njk" %}
 
-{% block content %}{% endblock %}
-    
+<main>
+    {% block content %}{% endblock %}
+</main>
+
 {% include "shared/_footer.njk" %}
 </body>
 <script type="text/javascript" src="./js/application.js"></script>

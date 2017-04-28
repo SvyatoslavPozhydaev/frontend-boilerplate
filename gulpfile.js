@@ -1,18 +1,16 @@
 'use strict';
-
 const gulp             = require('gulp');
 const sass             = require('gulp-sass');
 const cleancss         = require('gulp-clean-css');
 const autoprefixer     = require('gulp-autoprefixer');
-const include          = require('gulp-include');
 const uglify           = require('gulp-uglify');
 const concat           = require('gulp-concat');
 const sourcemaps       = require('gulp-sourcemaps');
 const add              = require('gulp-add-src');
 const gutil            = require('gulp-util');
 const nunjucksRender   = require('gulp-nunjucks-render');
-const rev              = require('gulp-rev');
-const revDel           = require('rev-del');
+const rev              = require('gulp-rev');           // <--- for Laravel elixir helper
+const revDel           = require('rev-del');            // <--- for Laravel elixir helper
 const browserSync      = require('browser-sync');
 const bourbon          = require('node-bourbon');
 const reset            = require('node-reset-scss');
@@ -21,7 +19,6 @@ const babelify         = require('babelify');
 const vinylStream      = require('vinyl-source-stream');
 const vinylBuffer      = require('vinyl-buffer');
 const ftp              = require('vinyl-ftp');
-
 // CONFIG BASE PATH
 const resources = 'resources/';
 const assets    = resources + 'assets/';
@@ -30,7 +27,6 @@ const styles    = assets + 'stylesheets/';
 const scripts   = assets + 'javascripts/';
 const images    = assets + 'images/';
 const fonts     = assets + 'fonts/';
-
 // CONFIG ALL PATH
 const paths = {
     styles: {
@@ -62,7 +58,7 @@ const paths = {
     html: {
         watch: resources + 'views/**/*.njk',
         input: resources + 'views/pages/*.njk',
-        output: build
+        output: 'build/'
     },
     fonts: {
         watch: [
@@ -74,62 +70,47 @@ const paths = {
             fonts + '**/*.svg',
             fonts + '**/*.css',
         ],
-        input: fonts + 'fonts/**/*.*',
+        input: fonts + '**/*',
         output: build + 'fonts/'
     }
 };
-
 function onError(error){
     gutil.log(gutil.colors.red('[Compilation Error]'));
     gutil.log(gutil.colors.red(error));
     this.emit('end');
 }
-
-gulp.task('styles:vendor', function () {
-    return gulp.src(paths.styles.vendor)
-        .pipe(include())
-        .pipe(gulp.dest(paths.styles.output))
-        .pipe(browserSync.stream({ match: "**/*.css" }));
-});
-
-gulp.task('styles:application', function () {
+gulp.task('styles', function () {
     return gulp.src(paths.styles.input)
         .pipe(sourcemaps.init())
         .pipe(
             sass({
                 includePaths: [
+                    'node_modules/',
                     bourbon.includePaths,
                     reset.includePath
                 ]
             })
-            .on('error', sass.logError)
+                .on('error', sass.logError)
         )
         .pipe(autoprefixer({browsers: ['> 1%'], cascade: false}))
         .pipe(cleancss())
         .pipe(sourcemaps.write('../map'))
+        // .pipe(sourcemaps.write('../map', { sourceMappingURLPrefix: '../..' }))           // <-- for Laravel
         .pipe(gulp.dest(paths.styles.output))
         .pipe(browserSync.stream({ match: "**/*.css" }));
 });
-
-gulp.task('watch:styles:vendor', ['styles:vendor'], function (done) {
-    // revVersion();
+gulp.task('watch:styles', ['styles'], function (done) {
+    // revVersion();    // <--- for Laravel elixir helper
     done();
 });
-gulp.task('watch:styles:application', ['styles:application'], function (done) {
-    // revVersion();
-    done();
-});
-
-gulp.task('styles', ['styles:vendor', 'styles:application']);
-
 gulp.task('scripts', function () {
     return browserify({
-            extensions: ['.js'],
-            entries: paths.scripts.application,
-            debug: true,
-        })
-        .transform(babelify.configure({ 
-                presets: ["es2015", 'es2016', 'stage-0'] 
+        extensions: ['.js'],
+        entries: paths.scripts.application,
+        debug: true,
+    })
+        .transform(babelify.configure({
+                presets: ["es2015", 'es2016', 'stage-0']
             })
         )
         .bundle()
@@ -141,34 +122,28 @@ gulp.task('scripts', function () {
         //.pipe(concat('application.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('../map'))
+        //.pipe(sourcemaps.write('../map',{ sourceMappingURLPrefix: '../..' }))         <-- for Laravel
         .pipe(gulp.dest(paths.scripts.output));
 });
-
 gulp.task('watch:scripts', ['scripts'], function (done) {
-    // revVersion();
-    browserSync.reload();
+    // revVersion();        // <--- for Laravel elixir helper
     done();
 });
-
 gulp.task('html', function () {
     return gulp.src(paths.html.input)
         .pipe(nunjucksRender({
             path: resources + '/views/'
         }).on('error', onError))
         .pipe(gulp.dest(paths.html.output));
-        
 });
-
 gulp.task('images', function () {
     return gulp.src(paths.images.input)
         .pipe(gulp.dest(paths.images.output));
 });
-
 gulp.task('fonts', function () {
     return gulp.src(paths.fonts.input)
         .pipe(gulp.dest(paths.fonts.output))
 });
-
 gulp.task('watch:html', ['html'], function (done) {
     browserSync.reload();
     done();
@@ -181,65 +156,60 @@ gulp.task('watch:fonts', ['fonts'], function (done) {
     browserSync.reload();
     done();
 });
-
 gulp.task('browserSync', function() {
     browserSync.init({
-        server: {
-            baseDir: build,
-        }
+        /*server: {
+         baseDir: build,
+         },*/
+        proxy: 'LOCAL_HOST'
     });
 });
-
 const revVersion = function(){
     return gulp.src([
-                 build + 'css/*.css',
-                 build + 'js/*.js'
-        ], {base: 'public'})
+        build + 'css/*.css',
+        build + 'js/*.js'
+    ], {base: build })
         .pipe(rev())
         .pipe(gulp.dest( build + 'build'))
         .pipe(rev.manifest())
         .pipe(revDel({ dest : build + 'build' }))
-        .pipe(gulp.dest( build + 'build'));
-}
-
+        .pipe(gulp.dest( build + 'build'))
+        .pipe(browserSync.stream());
+};
 gulp.task( 'version' , function () {
     return revVersion();
 });
-
 gulp.task('watch', ['browserSync'], function() {
     // styles watcher
-    gulp.watch(paths.styles.vendor, ['styles:vendor']);
-    gulp.watch(paths.styles.watch, ['styles:application']);
-
+    gulp.watch(paths.styles.watch, ['watch:styles']);
     // scripts watcher
     gulp.watch(paths.scripts.watch, ['watch:scripts']);
-
     // images
     gulp.watch(paths.images.watch, ['watch:images']);
-
     // html
     gulp.watch(paths.html.watch, ['watch:html']);
-
+    // php
+    // gulp.watch(['resources/**/*.php', 'app/**/*.php'], browserSync.reload);
     // fonts
     gulp.watch(paths.fonts.watch, ['watch:fonts']);
 });
-
 gulp.task('server:config', function(){
-	return gulp.src( [
-			resources + 'server/**/*.*',
-			resources + 'server/.htaccess',
-		])
-		.pipe(gulp.dest( build ));
+    return gulp.src( [
+        resources + 'server/**/*.*',
+        resources + 'server/.htaccess',
+    ])
+        .pipe(gulp.dest( build ));
 });
-
 gulp.task('build', [
     'styles',
     'scripts',
-    'html',
     'images',
     'fonts',
-    'server:config'
-]);
+    'html'
+    //'server:config'
+], function () {
+    // revVersion();        // <--- for Laravel elixir helper
+});
 
 gulp.task('dev', ['build'], function(){
     gulp.start('watch')
@@ -248,24 +218,20 @@ gulp.task('dev', ['build'], function(){
 gulp.task('default', ['build']);
 
 gulp.task('deploy', function () {
-
     const conn = ftp.create({
         host:     'HOST',
         user:     'USER',
         password: 'PASS',
         parallel: 10
     });
-
     const globs = [
         build + 'fonts/**/*',
         build + 'images/**/*',
         build + 'css/*',
-        build + '/js/*',
+        build + 'js/*',
         build + '*.html',
     ];
-
     return gulp.src(globs, { base: build, buffer: false })
         .pipe(conn.newer('DIR'))
         .pipe(conn.dest('DIR'));
-
 });
