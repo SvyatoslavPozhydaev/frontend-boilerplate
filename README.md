@@ -16,7 +16,7 @@ $ yarn install
 ```sh
 $ gulp dev      # for develop
 $ gulp build    # for build 
-$ gulp deploy   $ for deploy ( need set settings for deploying )
+$ gulp deploy   # for deploy ( need set settings for deploying )
 ```
 
 ## HTML Templates 
@@ -25,7 +25,7 @@ Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
 ```
 
 ## Structure
-```
+```sh
 │   .gitignore
 │   gulpfile.js
 │   package.json
