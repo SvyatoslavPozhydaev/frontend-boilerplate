@@ -14,9 +14,9 @@ $ yarn install
 
 ## Gulp commands
 ```sh
-$ gulp dev      <--- for develop
-$ gulp build    <--- for build 
-$ gulp deploy   <--- for deploy ( need set settings for deploying )
+$ gulp dev      # for develop
+$ gulp build    # for build 
+$ gulp deploy   $ for deploy ( need set settings for deploying )
 ```
 
 ## HTML Templates 
@@ -31,23 +31,23 @@ Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
 │   package.json
 │   README.md
 │   yarn.lock
-└───resources                                    # BASE PATH
-    ├───assets                                   # ASSETS
+└───resources                                   # BASE PATH
+    ├───assets                                  # ASSETS
     │   ├───fonts                               # FONTS
     │   ├───images                              # IMAGES
     │   │   ├───favicon
     │   │   ├───share
     │   │   └───sprites
     │   ├───javascripts                         # JAVASCRIPTS
-    │   │   │   Application.js                        # entry point js
-    │   │   └───vendor                              # for vendors whithout support npm
+    │   │   │   Application.js                    # entry point js
+    │   │   └───vendor                            # for vendors whithout support npm
     │   └───stylesheets                         # STYLESHEETS
-    │       └───sass                            # sass
-    │           │   application.sass                   # entry point sass
+    │       └───sass                              # sass
+    │           │   application.sass                # entry point sass
     │           │   vendor.sass
-    │           ├───blocks                           # BEM Blocks
+    │           ├───blocks                          # BEM Blocks
     │           │       wrapper.sass
-    │           ├───core                             # base settings
+    │           ├───core                            # base settings
     │           │       core.sass
     │           │       _fonts.sass
     │           │       _typography.sass
