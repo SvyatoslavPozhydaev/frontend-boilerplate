@@ -20,9 +20,8 @@ $ gulp deploy   # for deploy ( need set settings for deploying )
 ```
 
 ## HTML Templates 
-```
-Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
-```
+
+> Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
 
 ## Structure
 ```sh
