@@ -29,12 +29,14 @@
     "babel-polyfill": "^6.23.0",
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
+    "gulp-if": "^2.0.2",
     "gulp-nunjucks-render": "^2.0.0",
     "gulp-rev": "^7.1.2",
     "jquery": "^3.2.0",
     "node-reset-scss": "^1.0.1",
     "rev-del": "^1.0.5",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
   }
 }

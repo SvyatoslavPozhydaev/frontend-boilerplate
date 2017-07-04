@@ -19,6 +19,8 @@ const babelify         = require('babelify');
 const vinylStream      = require('vinyl-source-stream');
 const vinylBuffer      = require('vinyl-buffer');
 const ftp              = require('vinyl-ftp');
+const watchify         = require('watchify');
+const gulpif           = require('gulp-if');
 // CONFIG BASE PATH
 const resources = 'resources/';
 const assets    = resources + 'assets/';
@@ -103,8 +105,55 @@ gulp.task('watch:styles', ['styles'], function (done) {
     // revVersion();    // <--- for Laravel elixir helper
     done();
 });
+
+function scriptsFunc(watch) {
+    let bundler, rebundle;
+    bundler = browserify({
+        extensions: ['.js'],
+        entries: paths.scripts.application,
+        debug: true,
+        //basedir: __dirname,
+        cache: {}, // required for watchify
+        packageCache: {}, // required for watchify
+        fullPaths: watch // required to be true only for watchify
+    });
+    bundler.transform(babelify.configure({
+        presets: ["es2015", 'es2016', 'stage-0']
+    }));
+
+    if(watch) {
+        bundler = watchify(bundler, {
+            delay: 10,
+        })
+    }
+
+    rebundle = function() {
+        gutil.log(gutil.colors.green('[Start Script]'));
+        let stream = bundler.bundle();
+
+        return stream.on('error', onError)
+            .pipe(vinylStream('application.js'))
+            .pipe(vinylBuffer()) // for using other gulp plugins
+            .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(gulpif(!watch, uglify() ))
+            .pipe(sourcemaps.write('../map'))
+            .pipe(gulp.dest(paths.scripts.output))
+            .on('end', function () {
+                gutil.log(gutil.colors.green('[Stop Script]'));
+            })
+            .pipe(browserSync.stream());
+    };
+
+    bundler.on('update', rebundle);
+    return rebundle();
+}
+gulp.task('scriptsWatch', function () {
+    return scriptsFunc(true);
+});
+
 gulp.task('scripts', function () {
-    return browserify({
+    return scriptsFunc(false);
+    /*return browserify({
         extensions: ['.js'],
         entries: paths.scripts.application,
         debug: true,
@@ -123,7 +172,7 @@ gulp.task('scripts', function () {
         .pipe(uglify())
         .pipe(sourcemaps.write('../map'))
         //.pipe(sourcemaps.write('../map',{ sourceMappingURLPrefix: '../..' }))         <-- for Laravel
-        .pipe(gulp.dest(paths.scripts.output));
+        .pipe(gulp.dest(paths.scripts.output));*/
 });
 gulp.task('watch:scripts', ['scripts'], function (done) {
     // revVersion();        // <--- for Laravel elixir helper
@@ -183,7 +232,7 @@ gulp.task('watch', ['browserSync'], function() {
     // styles watcher
     gulp.watch(paths.styles.watch, ['watch:styles']);
     // scripts watcher
-    gulp.watch(paths.scripts.watch, ['watch:scripts']);
+    //gulp.watch(paths.scripts.watch, ['watch:scripts']);
     // images
     gulp.watch(paths.images.watch, ['watch:images']);
     // html
@@ -211,8 +260,15 @@ gulp.task('build', [
     // revVersion();        // <--- for Laravel elixir helper
 });
 
-gulp.task('dev', ['build'], function(){
-    gulp.start('watch')
+gulp.task('dev', [
+    'styles',
+    'scriptsWatch',
+    'images',
+    'fonts',
+    'html'
+    //'server:config'
+], function(){
+    gulp.start('watch');
 });
 
 gulp.task('default', ['build']);
