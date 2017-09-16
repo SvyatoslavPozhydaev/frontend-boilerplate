@@ -13,16 +13,14 @@
     <link rel="shortcut icon" href="./images/favicon/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="./images/favicon/apple-touch-icon.png" type="image/png">
 
-    <link rel="stylesheet" href="./css/application.css">
+    <link rel="stylesheet" href="css/app.css?{{ hash }}">
 </head>
 <body>
-{% include "shared/_header.njk" %}
-
+{% include "shared/_footer.njk" %}
 <main>
     {% block content %}{% endblock %}
 </main>
-
-{% include "shared/_footer.njk" %}
+{% include "shared/_header.njk" %}
+<script src="js/app.js?{{ hash }}"></script>
 </body>
-<script type="text/javascript" src="./js/application.js"></script>
 </html>

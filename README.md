@@ -9,14 +9,15 @@ $ git remote add origin <url to git repo>
 $ git pull origin master
 $ git remote rm origin
 $ git checkout -b develop
-$ yarn install
+$ npm install
 ```
 
 ## Gulp commands
 ```sh
-$ gulp dev      # for develop
-$ gulp build    # for build 
-$ gulp deploy   # for deploy ( need set settings for deploying )
+$ gulp dev           # for develop
+$ gulp build         # for build 
+$ gulp deploy:dev    # for deploy ( need set settings for deploying )
+$ gulp deploy:prod   # for deploy ( need set settings for deploying )
 ```
 
 ## HTML Templates 
@@ -29,17 +30,17 @@ $ gulp deploy   # for deploy ( need set settings for deploying )
 │   gulpfile.js
 │   package.json
 │   README.md
-│   yarn.lock
-└───resources                                   # BASE PATH
-    ├───assets                                  # ASSETS
+|   webpack.config.js
+└───resources                            # BASE PATH
+    ├───assets                               # ASSETS
     │   ├───fonts                               # FONTS
     │   ├───images                              # IMAGES
     │   │   ├───favicon
     │   │   ├───share
     │   │   └───sprites
     │   ├───javascripts                         # JAVASCRIPTS
-    │   │   │   Application.js                    # entry point js
-    │   │   └───vendor                            # for vendors whithout support npm
+    │   │   │   Application.js                     # entry point js
+    │   │   └───vendor                             # for vendors whithout support npm
     │   └───stylesheets                         # STYLESHEETS
     │       └───sass                              # sass
     │           │   application.sass                # entry point sass
@@ -61,11 +62,11 @@ $ gulp deploy   # for deploy ( need set settings for deploying )
     │       robots.txt
     └───views                                   # HTML Template
         ├───layouts
-        │       layout.njk.html
+        │       layout.njk
         ├───pages
-        │       404.njk.html
-        │       index.njk.html
+        │       404.njk
+        │       index.njk
         └───shared
-                _footer.njk.html
-                _header.njk.html
+                _footer.njk
+                _header.njk
 ```
