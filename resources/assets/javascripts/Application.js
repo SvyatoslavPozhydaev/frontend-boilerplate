@@ -1,4 +1,6 @@
-import $ from 'jquery';
+//VENDORS
+window.$ = window.jQuery = require('jquery');
+require('bootstrap-sass');
 
 class Application{
     constructor(){

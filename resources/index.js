@@ -1,7 +1,3 @@
-//VENDORS
-window.$ = window.jQuery = require('jquery');
-require('bootstrap-sass');
-
 // APPLICATION
 import './assets/stylesheets/sass/application.sass'
 import './assets/javascripts/Application';
