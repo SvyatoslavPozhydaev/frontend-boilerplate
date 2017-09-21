@@ -30,6 +30,7 @@ const config = {
 gulp.task("webpack", function(callback) {
     // run webpack
     process.env.NODE_ENV = 'production';
+    process.env.ASSET_PATH = './';
 
     let webpackConfig     = require('./webpack.config');
 
@@ -51,14 +52,18 @@ gulp.task("webpack", function(callback) {
 
 gulp.task("webpack-dev-server", function(callback) {
 
+    let SERVER_HOST = 'localhost';
+    let SERVER_PORT = 3000;
+
     process.env.NODE_ENV = 'development';
+    process.env.ASSET_PATH = `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
     let webpackConfig     = require('./webpack.config');
 
     // modify some webpack config options
     let devWebpackConfig = Object.create(webpackConfig);
     devWebpackConfig.devtool = "eval";
-    devWebpackConfig.entry.app.unshift("webpack-dev-server/client?http://localhost:8080/");
+    devWebpackConfig.entry.app.unshift(`webpack-dev-server/client?http://${SERVER_HOST}:${SERVER_PORT}/`);
     devWebpackConfig.entry.app.unshift("webpack/hot/dev-server");
     devWebpackConfig.plugins.push( new webpack.HotModuleReplacementPlugin() );
 
@@ -73,10 +78,10 @@ gulp.task("webpack-dev-server", function(callback) {
         stats: {
             colors: true
         }
-    }).listen(8080, "localhost", function(err) {
+    }).listen(SERVER_PORT, SERVER_HOST, function(err) {
         if(err) throw new gutil.PluginError("webpack-dev-server", err);
         // Server listening
-        gutil.log("[webpack-dev-server]", "http://localhost:8080/");
+        gutil.log("[webpack-dev-server]", `http://${SERVER_HOST}:${SERVER_PORT}/`);
 
         // keep the server alive or continue?
         // callback();

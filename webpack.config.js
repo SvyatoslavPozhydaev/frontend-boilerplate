@@ -2,6 +2,9 @@ const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 
+const ASSET_PATH = process.env.ASSET_PATH;
+
+
 const extractSass = new ExtractTextPlugin({
     filename: 'css/[name].css',
     disable: (process.env.NODE_ENV === 'development')
@@ -39,6 +42,7 @@ module.exports = {
     output: {
         filename: 'js/app.js',
         path: path.resolve(__dirname, 'build'),
+        publicPath: ASSET_PATH
     },
     stats: { //object
         assets: true,
@@ -56,7 +60,7 @@ module.exports = {
                     presets: ["env"]
                 }
             },{
-                test: /\.(jpe?g|png|gif|svg)$/i,
+                test: /\.(jpe?g|png|gif|svg|ico)$/i,
                 use: [
                     {
                         loader: 'file-loader',
@@ -78,7 +82,10 @@ module.exports = {
                         }
                     }
                 ],
-                include: [path.resolve(__dirname, 'resources', 'assets', 'fonts')]
+                include: [
+                    path.resolve(__dirname, 'node_modules'),
+                    path.resolve(__dirname, 'resources', 'assets', 'fonts')
+                ]
             },
             {test: /\.sass$/, use: sassExtractor()},
             {test: /\.scss$/, use: sassExtractor()},
