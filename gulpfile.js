@@ -38,7 +38,7 @@ gulp.task("webpack", function(callback) {
     prodWebpackConfig.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: 'source-map'
-        }),
+        })
     );
 
     webpack(webpackConfig, function(err, stats) {
