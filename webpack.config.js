@@ -12,7 +12,7 @@ const extractSass = new ExtractTextPlugin({
 });
 
 const sassExtractor = () => {
-    return extractSass.extract({
+    return ['css-hot-loader'].concat(extractSass.extract({
         use: [{
             loader: "css-loader",
             options: {
@@ -45,7 +45,7 @@ const sassExtractor = () => {
             }
         }],
         fallback: "style-loader"
-    })
+    }))
 };
 
 module.exports = {
