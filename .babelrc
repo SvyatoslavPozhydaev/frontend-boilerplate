@@ -1,0 +1,30 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 4 versions",
+            "ie >= 11"
+          ]
+        },
+        "useBuiltIns": true
+      }
+    ],
+    "stage-0"
+  ],
+  "plugins": [
+    [
+      "transform-runtime",
+      {
+        "helpers": true,
+        "polyfill": true,
+        "regenerator": true,
+        "moduleName": "babel-runtime"
+      }
+    ],
+    "transform-object-rest-spread",
+    "syntax-dynamic-import"
+  ]
+}

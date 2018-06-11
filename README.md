@@ -12,12 +12,10 @@ $ git checkout -b develop
 $ npm install
 ```
 
-## Gulp commands
+## Develop
 ```sh
-$ gulp dev           # for develop
-$ gulp build         # for build 
-$ gulp deploy:dev    # for deploy ( need set settings for deploying )
-$ gulp deploy:prod   # for deploy ( need set settings for deploying )
+npm start       # for developing and   open  localhost:3000
+npm run build   # for build. creating folder "build"
 ```
 
 ## HTML Templates 
@@ -26,47 +24,77 @@ $ gulp deploy:prod   # for deploy ( need set settings for deploying )
 
 ## Structure
 ```sh
-│   .gitignore
-│   gulpfile.js
-│   package.json
-│   README.md
+|   .babelrc
+|   .gitignore
+|   package-lock.json
+|   package.json
+|   README.md
 |   webpack.config.js
-└───resources                            # BASE PATH
-    ├───assets                               # ASSETS
-    │   ├───fonts                               # FONTS
-    │   ├───images                              # IMAGES
-    │   │   ├───favicon
-    │   │   ├───share
-    │   │   └───sprites
-    │   ├───javascripts                         # JAVASCRIPTS
-    │   │   │   Application.js                     # entry point js
-    │   │   └───vendor                             # for vendors whithout support npm
-    │   └───stylesheets                         # STYLESHEETS
-    │       └───sass                              # sass
-    │           │   application.sass                # entry point sass
-    │           │   vendor.sass
-    │           ├───blocks                          # BEM Blocks
-    │           │       wrapper.sass
-    │           ├───core                            # base settings
-    │           │       core.sass
-    │           │       _fonts.sass
-    │           │       _typography.sass
-    │           │       _variable.sass
-    │           └───helpers
-    │                   media.sass
-    │                   mixins.sass
-    ├───server
-    │       .htaccess
-    │       browserconfig.xml
-    │       crossdomain.xml
-    │       robots.txt
-    └───views                                   # HTML Template
-        ├───layouts
-        │       layout.njk
-        ├───pages
-        │       404.njk
-        │       index.njk
-        └───shared
+|                   
+\---src
+    |   index.js
+    |   
+    +---base
+    |       index.sass
+    |       
+    +---blocks
+    |   |   index.js
+    |   |   
+    |   \---block-example
+    |           index.sass
+    |           square2.png
+    |           
+    +---fonts
+    |       index.sass
+    |       
+    +---grid
+    |       index.sass
+    |       
+    +---images
+    |   |   .gitkeep
+    |   |   square.png
+    |   |   square3.png
+    |   |   
+    |   +---favicon
+    |   |       apple-touch-icon.png
+    |   |       favicon.ico
+    |   |       
+    |   +---share
+    |   |       tile-wide.png
+    |   |       tile.png
+    |   |       
+    |   \---sprites
+    |           .gitkeep
+    |           
+    +---mixins
+    |       index.sass
+    |       _clearfix.sass
+    |       _font-face.scss
+    |       _media.sass
+    |       _sticky-footer.sass
+    |       
+    +---variables
+    |       index.sass
+    |       
+    \---views
+        |   index.js
+        |   
+        +---layouts
+        |       layout.njk
+        |       
+        +---pages
+        |   |   index.js
+        |   |   
+        |   +---404
+        |   |       404.njk
+        |   |       index.js
+        |   |       
+        |   \---home
+        |           index.js
+        |           index.njk
+        |           
+        \---shared
                 _footer.njk
                 _header.njk
+
 ```
