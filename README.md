@@ -1,4 +1,4 @@
-# GULP FRONTEND
+# FRONTEND BOILERPLATE
 
 ## Install
 ```sh
