@@ -183,7 +183,7 @@ module.exports = {
           }, {
             loader: 'pug-html-loader',
             options: {
-              basedir: path.resolve(__dirname, 'src'),
+              basedir: path.resolve(__dirname, 'src', 'views'),
               pretty: '    '
             }
           }
