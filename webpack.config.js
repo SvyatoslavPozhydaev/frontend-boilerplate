@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 const SERVER_HOST = 'localhost'
@@ -131,6 +131,7 @@ module.exports = {
       {test: /\.css$/, use: sassExtractor()},
       {
         test: /\.njk$/,
+        //include: [ path.resolve(__dirname, 'src', 'views') ],
         use: [
           {
             loader: 'file-loader',
@@ -160,6 +161,34 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.pug$/,
+        //include: [ path.resolve(__dirname, 'src', 'views') ],
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].html'
+            }
+          }, {
+            loader: 'extract-loader'
+          }, {
+            loader: 'html-loader',
+            options: {
+              ignoreCustomFragments: [/\{\{.*?}}/],
+              root: path.resolve(__dirname, 'src'),
+              attrs: ['img:src'],
+              interpolate: true
+            }
+          }, {
+            loader: 'pug-html-loader',
+            options: {
+              basedir: path.resolve(__dirname, 'src'),
+              pretty: '    '
+            }
+          }
+        ]
+      }
     ],
   },
 
@@ -183,9 +212,9 @@ module.exports = {
     extractSass,
     new CleanWebpackPlugin(['build']),
     new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
-      "window.jQuery": "jquery",
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
     })
   ],
 }

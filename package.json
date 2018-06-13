@@ -35,6 +35,8 @@
     "nunjucks-html-loader": "^1.1.0",
     "popper.js": "^1.14.3",
     "postcss-loader": "^2.1.5",
+    "pug": "^2.0.3",
+    "pug-html-loader": "^1.1.5",
     "resolve-url-loader": "^2.3.0",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
