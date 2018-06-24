@@ -108,7 +108,7 @@ module.exports = {
             },
           },
         ],
-        exclude: [path.resolve(__dirname, 'src', 'assets', 'fonts')],
+        exclude: [path.resolve(__dirname, 'src', 'fonts')],
       },
       {
         test: /\.(woff|woff2|eot|ttf|svg)(\?.*$|$)/,
@@ -123,7 +123,7 @@ module.exports = {
         ],
         include: [
           path.resolve(__dirname, 'node_modules'),
-          path.resolve(__dirname, 'src', 'assets', 'fonts'),
+          path.resolve(__dirname, 'src', 'fonts'),
         ],
       },
       {test: /\.sass$/, use: sassExtractor()},
