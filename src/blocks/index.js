@@ -1,7 +1,5 @@
 import './block-example'
 
-export default {
-  init() {
-    console.log('init blocks')
-  }
+export default () => {
+  console.log('init blocks')
 }

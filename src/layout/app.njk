@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="css/app.css?{{ hash }}">
 </head>
 <body>
-{% include "shared/_header.njk" %}
+{% include "header/header.njk" %}
 <main>
     {% block content %}{% endblock %}
 </main>
-{% include "shared/_footer.njk" %}
+{% include "header/footer.njk" %}
 <script src="js/app.js?{{ hash }}"></script>
 </body>
 </html>

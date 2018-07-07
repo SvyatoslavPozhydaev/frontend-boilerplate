@@ -5,15 +5,15 @@ require('bootstrap');
 import 'bootstrap/scss/bootstrap.scss'
 
 import './fonts'
-import './base'
-import './grid'
-import Blocks from './blocks'
-import Views from './views'
+import initLayout from './layout'
+import initBlocks from './blocks'
+import initPages from './pages'
 
 class Application{
   constructor(){
-    Blocks.init()
-    Views.init()
+    initLayout()
+    initBlocks()
+    initPages()
   }
 }
 

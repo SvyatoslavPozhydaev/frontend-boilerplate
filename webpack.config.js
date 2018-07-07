@@ -152,7 +152,7 @@ module.exports = {
             loader: 'nunjucks-html-loader',
             options: {
               searchPaths: [
-                path.resolve(__dirname, 'src', 'views'),
+                path.resolve(__dirname, 'src'),
               ],
               context: {
                 hash: (new Date()).getTime().toString('16'),
@@ -183,7 +183,7 @@ module.exports = {
           }, {
             loader: 'pug-html-loader',
             options: {
-              basedir: path.resolve(__dirname, 'src', 'views'),
+              basedir: path.resolve(__dirname, 'src'),
               pretty: '    '
             }
           }
