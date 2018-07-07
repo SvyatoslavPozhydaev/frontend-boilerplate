@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
+const postcssUrl = require("postcss-url")
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -15,27 +16,37 @@ const extractSass = new ExtractTextPlugin({
 })
 
 const sassExtractor = () => {
-  return ['css-hot-loader'].concat(extractSass.extract({
+  return ['extracted-loader'].concat(extractSass.extract({
     use: [
       {
         loader: 'css-loader',
         options: {
           sourceMap: true,
-          root: path.resolve(__dirname, 'src'),
-          minimize: (process.env.NODE_ENV === 'production'),
+          //root: path.resolve(__dirname, 'src'),
+          //minimize: IS_PRODUCTION
         },
       }, {
         loader: 'postcss-loader',
         options: {
           sourceMap: true,
-          plugins: [
-            //require('postcss-import')({ root: loader.resourcePath }),
-            //require('postcss-cssnext')(),
-            autoprefixer({
-              browsers: ['ie >= 9', 'last 4 version', '> 1%'],
-            }),
-            //require('cssnano')()
-          ],
+          plugins: function () {
+            let plugins = [
+              //require('postcss-import')({ root: loader.resourcePath }),
+              //require('postcss-cssnext')(),
+              //postcssUrl(),
+              autoprefixer({
+                browsers: ['ie >= 9', 'iOS >= 8', 'Safari >= 8', 'last 5 version'],
+              })
+            ];
+
+            if(IS_PRODUCTION) {
+              plugins.push(
+                require('cssnano')()
+              )
+            }
+
+            return plugins
+          }
         },
       },
       {
@@ -206,11 +217,15 @@ module.exports = {
     host: SERVER_HOST,
     port: SERVER_PORT,
     headers: {'Access-Control-Allow-Origin': '*'},
+    contentBase: path.resolve(__dirname, 'src')
   },
 
   plugins: [
     extractSass,
     new CleanWebpackPlugin(['build']),
+    new webpack.DefinePlugin({
+      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
