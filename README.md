@@ -2,13 +2,9 @@
 
 ## Install
 ```sh
-$ mkdir <project name>
-$ cd <project name>
+$ git clone 
+$ rm -rf .git
 $ git init
-$ git remote add origin <url to git repo>
-$ git pull origin master
-$ git remote rm origin
-$ git checkout -b develop
 $ npm install
 ```
 
@@ -22,79 +18,92 @@ npm run build   # for build. creating folder "build"
 
 > Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
 
+> Render [Pug](https://pugjs.org/api/getting-started.html) templates
+
 ## Structure
 ```sh
-|   .babelrc
-|   .gitignore
-|   package-lock.json
-|   package.json
-|   README.md
-|   webpack.config.js
-|                   
-\---src
-    |   index.js
-    |   
-    +---base
-    |       index.sass
-    |       
-    +---blocks
-    |   |   index.js
-    |   |   
-    |   \---block-example
-    |           index.sass
-    |           square2.png
-    |           
-    +---fonts
-    |       index.sass
-    |       
-    +---grid
-    |       index.sass
-    |       
-    +---images
-    |   |   .gitkeep
-    |   |   square.png
-    |   |   square3.png
-    |   |   
-    |   +---favicon
-    |   |       apple-touch-icon.png
-    |   |       favicon.ico
-    |   |       
-    |   +---share
-    |   |       tile-wide.png
-    |   |       tile.png
-    |   |       
-    |   \---sprites
-    |           .gitkeep
-    |           
-    +---mixins
-    |       index.sass
-    |       _clearfix.sass
-    |       _font-face.scss
-    |       _media.sass
-    |       _sticky-footer.sass
-    |       
-    +---variables
-    |       index.sass
-    |       
-    \---views
-        |   index.js
-        |   
-        +---layouts
-        |       layout.njk
-        |       
-        +---pages
-        |   |   index.js
-        |   |   
-        |   +---404
-        |   |       404.njk
-        |   |       index.js
-        |   |       
-        |   \---home
-        |           index.js
-        |           index.njk
-        |           
-        \---shared
-                _footer.njk
-                _header.njk
+│   .babelrc
+│   .gitignore
+│   package-lock.json
+│   package.json
+│   README.md
+│   webpack.config.js
+│
+└────src
+    │   index.js                                # entry point
+    │
+    ├───blocks                                  # blocks
+    │   │   index.js
+    │   │
+    │   └───block-example
+    │           index.sass
+    │           square2.png
+    │
+    ├───common                                  # common libs (var, mixins, e.t.c)
+    │   │   index.sass
+    │   │   _mixins.sass
+    │   │   _variables.sass
+    │   │
+    │   └───mixins
+    │           _clearfix.sass
+    │           _font-face.scss
+    │           _media.sass
+    │           _sticky-footer.sass
+    │
+    ├───fonts                                   # fonts
+    │       index.sass
+    │
+    ├───images                                  # images
+    │   │   .gitkeep
+    │   │   square.png
+    │   │   square3.png
+    │   │
+    │   ├───favicon
+    │   │       apple-touch-icon.png
+    │   │       favicon.ico
+    │   │
+    │   ├───share
+    │   │       tile-wide.png
+    │   │       tile.png
+    │   │
+    │   └───sprites
+    │           .gitkeep
+    │
+    ├───layout                                  # base layout and blocks for layout
+    │   │   app.njk
+    │   │   app.pug
+    │   │   index.js
+    │   │
+    │   ├───base
+    │   │       index.sass
+    │   │
+    │   ├───footer
+    │   │       footer.njk
+    │   │       footer.pug
+    │   │       footer.sass
+    │   │       index.js
+    │   │
+    │   ├───grid
+    │   │       index.sass
+    │   │
+    │   └───header
+    │           header.njk
+    │           header.pug
+    │           header.sass
+    │           index.js
+    │
+    └───pages                                   # pages
+        │   index.js
+        │
+        ├───404
+        │       404.njk
+        │       404.pug
+        │       index.js
+        │
+        └───home
+                index.js
+                index.njk
+                index.pug
+                index.sass
 
 ```
