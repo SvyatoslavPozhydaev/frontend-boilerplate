@@ -46,3 +46,20 @@
 =media-320
   @media only screen and (max-width: 320px)
     @content
+    
+
+=max-w($width)
+  @media (max-width: #{$width}px)
+    @content
+
+=max-h($height)
+  @media (max-height: #{$height}px)
+    @content
+
+=min-w($width)
+  @media (min-width: #{$width}px)
+    @content
+
+=min-h($height)
+  @media (min-height: #{$height}px)
+    @content
