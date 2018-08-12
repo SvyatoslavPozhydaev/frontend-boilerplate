@@ -2,6 +2,8 @@ import './index.sass'
 //import './index.njk'
 import './index.pug'
 
-export default () => {
+import tmpPug from './examplate-inline.tpl.pug'
 
+export default () => {
+  console.log(tmpPug())
 }

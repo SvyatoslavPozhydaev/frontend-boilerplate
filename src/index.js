@@ -1,8 +1,9 @@
 window.$ = window.jQuery = require('jquery');
-window.Popper = require('popper.js').default;
 
-require('bootstrap');
-import 'bootstrap/scss/bootstrap.scss'
+// Uncomment for use BOOTSTAP4
+// window.Popper = require('popper.js').default;
+// require('bootstrap');
+// import 'bootstrap/scss/bootstrap.scss'
 
 import './fonts'
 import initLayout from './layout'

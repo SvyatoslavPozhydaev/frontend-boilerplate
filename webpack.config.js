@@ -2,71 +2,76 @@ const path = require('path')
 const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
 const postcssUrl = require("postcss-url")
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const ExtractCssChunks = require("extract-css-chunks-webpack-plugin")
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 const SERVER_HOST = 'localhost'
 const SERVER_PORT = 3000
-const ASSET_PATH = IS_PRODUCTION ? '/' : `http://${SERVER_HOST}:${SERVER_PORT}/`
+const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`
 
-const extractSass = new ExtractTextPlugin({
-  filename: 'css/[name].css',
-})
-
-const sassExtractor = () => {
-  return ['extracted-loader'].concat(extractSass.extract({
-    use: [
-      {
-        loader: 'css-loader',
-        options: {
-          sourceMap: true,
-          //root: path.resolve(__dirname, 'src'),
-          //minimize: IS_PRODUCTION
-        },
-      }, {
-        loader: 'postcss-loader',
-        options: {
-          sourceMap: true,
-          plugins: function () {
-            let plugins = [
-              //require('postcss-import')({ root: loader.resourcePath }),
-              //require('postcss-cssnext')(),
-              //postcssUrl(),
-              autoprefixer({
-                browsers: ['ie >= 9', 'iOS >= 8', 'Safari >= 8', 'last 5 version'],
-              })
-            ];
-
-            if(IS_PRODUCTION) {
-              plugins.push(
-                require('cssnano')()
-              )
-            }
-
-            return plugins
+const styleLoader = function (isCss) {
+  let loaders = [
+    ExtractCssChunks.loader,
+    {
+      loader: 'css-loader',
+      options: {
+        sourceMap: true,
+        //root: path.resolve(__dirname, 'src'),
+        //minimize: IS_PRODUCTION,
+      },
+    }, {
+      loader: 'postcss-loader',
+      options: {
+        sourceMap: true,
+        plugins: (function () {
+          const plugins = []
+          plugins.push(
+            //require('postcss-import')({ root: loader.resourcePath }),
+            //require('postcss-cssnext')(),
+            postcssUrl(),
+            autoprefixer({
+              browsers: ['ie >= 9', 'last 4 version', '> 1%'],
+            })
+          )
+          if(IS_PRODUCTION){
+            plugins.push(
+              require('cssnano')()
+            )
           }
-        },
+          return plugins
+        })(),
       },
-      {
-        loader: 'resolve-url-loader',
+    },
+    {
+      loader: 'resolve-url-loader',
+    },
+    {
+      loader: 'sass-loader',
+      options: {
+        sourceMap: true,
+        includePaths: [
+          path.resolve(__dirname, 'node_modules/'),
+          path.resolve(__dirname, 'src'),
+        ],
       },
-      {
-        loader: 'sass-loader',
-        options: {
-          sourceMap: true,
-          includePaths: [
-            path.resolve(__dirname, 'node_modules/'),
-            path.resolve(__dirname, 'src'),
-          ],
-        },
-      }],
-    fallback: 'style-loader',
-  }))
+    }
+  ]
+
+  if(!isCss) {
+    loaders.push({
+      loader: 'sass-resources-loader',
+      options: {
+        resources: path.resolve(__dirname, 'src', 'common', 'index.sass')
+      },
+    });
+  }
+
+  return loaders
 }
 
-module.exports = {
+const config = {
   mode: process.env.NODE_ENV,
   context: path.resolve(__dirname, 'src'),
   entry: {
@@ -91,7 +96,7 @@ module.exports = {
       })
     ]
   },
-  stats: { //object
+  stats: {
     assets: true,
     colors: true,
     errors: true,
@@ -119,7 +124,22 @@ module.exports = {
             },
           },
         ],
-        exclude: [path.resolve(__dirname, 'src', 'fonts')],
+        exclude: [
+          path.resolve(__dirname, 'src', 'fonts'),
+          path.resolve(__dirname, 'src', 'images')
+        ],
+      },{
+        test: /\.(jpe?g|png|gif|svg|ico)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'images/[name]-[hash:8].[ext]',
+              publicPath: "./"
+            },
+          },
+        ],
+        include: [path.resolve(__dirname, 'src', 'images')],
       },
       {
         test: /\.(woff|woff2|eot|ttf|svg)(\?.*$|$)/,
@@ -128,7 +148,6 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: 'fonts/[name]-[hash:8].[ext]',
-              publicPath: '../',
             },
           },
         ],
@@ -137,12 +156,16 @@ module.exports = {
           path.resolve(__dirname, 'src', 'fonts'),
         ],
       },
-      {test: /\.sass$/, use: sassExtractor()},
-      {test: /\.scss$/, use: sassExtractor()},
-      {test: /\.css$/, use: sassExtractor()},
+      {
+        test: /\.(sass|scss)$/,
+        use: styleLoader()
+      },
+      {
+        test: /\.css$/,
+        use: styleLoader(true)
+      },
       {
         test: /\.njk$/,
-        //include: [ path.resolve(__dirname, 'src', 'views') ],
         use: [
           {
             loader: 'file-loader',
@@ -173,8 +196,14 @@ module.exports = {
         ],
       },
       {
+        test: /\.tpl\.pug$/,
+        loader: 'pug-loader'
+      },
+      {
         test: /\.pug$/,
-        //include: [ path.resolve(__dirname, 'src', 'views') ],
+        exclude: [
+          /\.tpl\.pug$/
+        ],
         use: [
           {
             loader: 'file-loader',
@@ -221,8 +250,11 @@ module.exports = {
   },
 
   plugins: [
-    extractSass,
-    new CleanWebpackPlugin(['build']),
+    new ExtractCssChunks({
+      filename: 'css/[name].css',
+      chunkFilename: "[name]-[id].css",
+      hot: IS_PRODUCTION,
+    }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
     }),
@@ -233,3 +265,12 @@ module.exports = {
     })
   ],
 }
+
+if(IS_PRODUCTION){
+  config.plugins.push(
+    new CleanWebpackPlugin(['build'])
+  )
+}
+
+
+module.exports = config
