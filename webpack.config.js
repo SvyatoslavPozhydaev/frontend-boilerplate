@@ -106,7 +106,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|es6)$/,
         loader: 'babel-loader',
         options: {
           cacheDirectory: true
