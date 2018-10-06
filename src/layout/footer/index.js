@@ -1,1 +1,1 @@
-import './footer.sass'
+import './footer.sass';

@@ -1,1 +1,1 @@
-import './header.sass'
+import './header.sass';

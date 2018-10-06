@@ -1,47 +1,46 @@
-const path = require('path')
-const webpack = require('webpack')
-const autoprefixer = require('autoprefixer')
-const postcssUrl = require("postcss-url")
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const ExtractCssChunks = require("extract-css-chunks-webpack-plugin")
+const path = require('path');
+const webpack = require('webpack');
+const cssnano = require('cssnano');
+const autoprefixer = require('autoprefixer');
+const postCssUrl = require('postcss-url');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 
-const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-const SERVER_HOST = 'localhost'
-const SERVER_PORT = 3000
-const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const SERVER_HOST = 'localhost';
+const SERVER_PORT = 3000;
+const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
-const styleLoader = function (isCss) {
-  let loaders = [
+const styleLoader = (isCss) => {
+  const loaders = [
     ExtractCssChunks.loader,
     {
       loader: 'css-loader',
       options: {
         sourceMap: true,
-        //root: path.resolve(__dirname, 'src'),
-        //minimize: IS_PRODUCTION,
       },
     }, {
       loader: 'postcss-loader',
       options: {
         sourceMap: true,
-        plugins: (function () {
-          const plugins = []
+        plugins: ((() => {
+          const plugins = [];
           plugins.push(
-            //require('postcss-import')({ root: loader.resourcePath }),
-            //require('postcss-cssnext')(),
-            postcssUrl(),
+            // require('postcss-import')({ root: loader.resourcePath }),
+            // require('postcss-cssnext')(),
+            postCssUrl(),
             autoprefixer({
               browsers: ['ie >= 9', 'last 4 version', '> 1%'],
-            })
-          )
-          if(IS_PRODUCTION){
+            }),
+          );
+          if (IS_PRODUCTION) {
             plugins.push(
-              require('cssnano')()
-            )
+              cssnano(),
+            );
           }
-          return plugins
-        })(),
+          return plugins;
+        })()),
       },
     },
     {
@@ -56,20 +55,20 @@ const styleLoader = function (isCss) {
           path.resolve(__dirname, 'src'),
         ],
       },
-    }
-  ]
+    },
+  ];
 
-  if(!isCss) {
+  if (!isCss) {
     loaders.push({
       loader: 'sass-resources-loader',
       options: {
-        resources: path.resolve(__dirname, 'src', 'common', 'index.sass')
+        resources: path.resolve(__dirname, 'src', 'common', 'index.sass'),
       },
     });
   }
 
-  return loaders
-}
+  return loaders;
+};
 
 const config = {
   mode: process.env.NODE_ENV,
@@ -91,10 +90,10 @@ const config = {
           sourceMap: true,
           output: {
             comments: false,
-          }
-        }
-      })
-    ]
+          },
+        },
+      }),
+    ],
   },
   stats: {
     assets: true,
@@ -109,7 +108,7 @@ const config = {
         test: /\.(js|es6)$/,
         loader: 'babel-loader',
         options: {
-          cacheDirectory: true
+          cacheDirectory: true,
         },
         exclude: [
           path.resolve(__dirname, 'node_modules'),
@@ -126,16 +125,16 @@ const config = {
         ],
         exclude: [
           path.resolve(__dirname, 'src', 'fonts'),
-          path.resolve(__dirname, 'src', 'images')
+          path.resolve(__dirname, 'src', 'images'),
         ],
-      },{
+      }, {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: [
           {
             loader: 'file-loader',
             options: {
               name: 'images/[name]-[hash:8].[ext]',
-              publicPath: "./"
+              publicPath: './',
             },
           },
         ],
@@ -158,11 +157,11 @@ const config = {
       },
       {
         test: /\.(sass|scss)$/,
-        use: styleLoader()
+        use: styleLoader(),
       },
       {
         test: /\.css$/,
-        use: styleLoader(true)
+        use: styleLoader(true),
       },
       {
         test: /\.njk$/,
@@ -189,7 +188,8 @@ const config = {
                 path.resolve(__dirname, 'src'),
               ],
               context: {
-                hash: (new Date()).getTime().toString('16'),
+                hash: (new Date()).getTime()
+                  .toString('16'),
               },
             },
           },
@@ -197,38 +197,38 @@ const config = {
       },
       {
         test: /\.tpl\.pug$/,
-        loader: 'pug-loader'
+        loader: 'pug-loader',
       },
       {
         test: /\.pug$/,
         exclude: [
-          /\.tpl\.pug$/
+          /\.tpl\.pug$/,
         ],
         use: [
           {
             loader: 'file-loader',
             options: {
-              name: '[name].html'
-            }
+              name: '[name].html',
+            },
           }, {
-            loader: 'extract-loader'
+            loader: 'extract-loader',
           }, {
             loader: 'html-loader',
             options: {
-              ignoreCustomFragments: [/\{\{.*?}}/],
               root: path.resolve(__dirname, 'src'),
               attrs: ['img:src'],
-              interpolate: true
-            }
-          }, {
+              interpolate: 'require',
+            },
+          },
+          {
             loader: 'pug-html-loader',
             options: {
               basedir: path.resolve(__dirname, 'src'),
-              pretty: '    '
-            }
-          }
-        ]
-      }
+              pretty: '    ',
+            },
+          },
+        ],
+      },
     ],
   },
 
@@ -245,32 +245,32 @@ const config = {
   devServer: {
     host: SERVER_HOST,
     port: SERVER_PORT,
-    headers: {'Access-Control-Allow-Origin': '*'},
-    contentBase: path.resolve(__dirname, 'src')
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    contentBase: path.resolve(__dirname, 'src'),
   },
 
   plugins: [
     new ExtractCssChunks({
       filename: 'css/[name].css',
-      chunkFilename: "[name]-[id].css",
+      chunkFilename: '[name]-[id].css',
       hot: IS_PRODUCTION,
     }),
     new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) }
+      'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) },
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
-    })
+    }),
   ],
-}
+};
 
-if(IS_PRODUCTION){
+if (IS_PRODUCTION) {
   config.plugins.push(
-    new CleanWebpackPlugin(['build'])
-  )
+    new CleanWebpackPlugin(['build']),
+  );
 }
 
 
-module.exports = config
+module.exports = config;
