@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const cssnano = require('cssnano');
 const autoprefixer = require('autoprefixer');
-const postCssUrl = require('postcss-url');
+// const postCssUrl = require('postcss-url');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
@@ -29,7 +29,7 @@ const styleLoader = (isCss) => {
           plugins.push(
             // require('postcss-import')({ root: loader.resourcePath }),
             // require('postcss-cssnext')(),
-            postCssUrl(),
+            // postCssUrl(),
             autoprefixer({
               browsers: ['ie >= 9', 'last 4 version', '> 1%'],
             }),
@@ -43,9 +43,6 @@ const styleLoader = (isCss) => {
         })()),
       },
     },
-    //     {
-    //       loader: 'resolve-url-loader',
-    //     },
     {
       loader: 'sass-loader',
       options: {
