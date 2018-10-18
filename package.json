@@ -2,7 +2,6 @@
   "name": "frontend-boilerplate",
   "version": "0.0.0",
   "description": "frontend boilerplate",
-  "private": true,
   "scripts": {
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --open --progress",
     "start": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --progress",

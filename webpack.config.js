@@ -59,6 +59,7 @@ const styleLoader = (isCss) => {
     loaders.push({
       loader: 'sass-resources-loader',
       options: {
+        sourceMap: true,
         resources: path.resolve(__dirname, 'src', 'common', 'index.sass'),
       },
     });
