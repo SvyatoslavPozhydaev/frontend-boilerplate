@@ -1,18 +1,29 @@
 const path = require('path');
 const webpack = require('webpack');
-const cssnano = require('cssnano');
-const autoprefixer = require('autoprefixer');
-// const postCssUrl = require('postcss-url');
+
+/**
+ * PostCSS plugins
+ */
+const postCssCssNano = require('cssnano');
+const postCssAutoprefixer = require('autoprefixer');
+const postCssUrl = require('postcss-url');
+const postCssPresetEnv = require('postcss-preset-env');
+const postCssFlexBugsFixes = require('postcss-flexbugs-fixes');
+
+/**
+ * Webpack plugins
+ */
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SERVER_HOST = 'localhost';
 const SERVER_PORT = 3000;
 const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
-const styleLoader = (isCss) => {
+const styleLoader = (isLoadResources = true) => {
   const loaders = [
     ExtractCssChunks.loader,
     {
@@ -27,16 +38,16 @@ const styleLoader = (isCss) => {
         plugins: ((() => {
           const plugins = [];
           plugins.push(
-            // require('postcss-import')({ root: loader.resourcePath }),
-            // require('postcss-cssnext')(),
-            // postCssUrl(),
-            autoprefixer({
-              browsers: ['ie >= 9', 'last 4 version', '> 1%'],
+            postCssFlexBugsFixes(),
+            postCssPresetEnv(),
+            postCssUrl(),
+            postCssAutoprefixer({
+              browsers: ['ie >= 9', 'last 4 version', '> 1%', 'safari >= 9', 'ios >= 9'],
             }),
           );
           if (IS_PRODUCTION) {
             plugins.push(
-              cssnano(),
+              postCssCssNano(),
             );
           }
           return plugins;
@@ -55,7 +66,7 @@ const styleLoader = (isCss) => {
     },
   ];
 
-  if (!isCss) {
+  if (isLoadResources) {
     loaders.push({
       loader: 'sass-resources-loader',
       options: {
@@ -75,10 +86,10 @@ const config = {
     app: [path.resolve(__dirname, 'src', 'index.js')],
   },
   output: {
-    filename: 'js/app.js',
+    filename: 'js/[name].js',
     path: path.resolve(__dirname, 'build'),
     publicPath: ASSET_PATH,
-    chunkFilename: '[name]-[chunkhash].js',
+    chunkFilename: 'js/[name].js',
   },
   optimization: {
     minimizer: [
@@ -92,6 +103,18 @@ const config = {
         },
       }),
     ],
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: 1,
+          name: 'vendors',
+          chunks: 'initial',
+          enforce: true,
+        },
+      },
+    },
   },
   stats: {
     assets: true,
@@ -154,12 +177,12 @@ const config = {
         ],
       },
       {
-        test: /\.(sass|scss)$/,
+        test: /\.sass$/,
         use: styleLoader(),
       },
       {
-        test: /\.css$/,
-        use: styleLoader(true),
+        test: /\.(css|scss)$/,
+        use: styleLoader(false),
       },
       {
         test: /\.njk$/,
@@ -186,8 +209,7 @@ const config = {
                 path.resolve(__dirname, 'src'),
               ],
               context: {
-                hash: (new Date()).getTime()
-                  .toString('16'),
+                hash: (new Date()).getTime().toString('16'),
               },
             },
           },
@@ -223,6 +245,9 @@ const config = {
             options: {
               basedir: path.resolve(__dirname, 'src'),
               pretty: '    ',
+              data: {
+                hash: (new Date()).getTime().toString('16'),
+              },
             },
           },
         ],
@@ -250,7 +275,7 @@ const config = {
   plugins: [
     new ExtractCssChunks({
       filename: 'css/[name].css',
-      chunkFilename: '[name]-[id].css',
+      chunkFilename: 'css/[name].css',
       hot: IS_PRODUCTION,
     }),
     new webpack.DefinePlugin({
@@ -267,6 +292,11 @@ const config = {
 if (IS_PRODUCTION) {
   config.plugins.push(
     new CleanWebpackPlugin(['build']),
+    new ManifestPlugin({
+      fileName: path.resolve(__dirname, 'build', 'manifest.json'),
+      //  publicPath: IS_PRODUCTION ? "/local/templates/hydromax/build/" : ASSET_PATH,
+      writeToFileEmit: true,
+    }),
   );
 }
 

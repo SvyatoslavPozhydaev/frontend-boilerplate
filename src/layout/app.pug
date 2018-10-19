@@ -8,10 +8,12 @@ head
   meta(name='description' content='')
   link(rel='shortcut icon' href="${require('images/favicon/favicon.ico')}" type='image/x-icon')
   link(rel='apple-touch-icon' href="${require('images/favicon/apple-touch-icon.png')}" type='image/png')
-  link(rel='stylesheet' href='css/app.css')
+  link(rel='stylesheet' href='css/vendors.css?' + hash)
+  link(rel='stylesheet' href='css/app.css?' + hash)
 body
   include header/header
   main
     block content
   include footer/footer
-  script(src='js/app.js')
+  script(src='js/vendors.js?' + hash)
+  script(src='js/app.js?' + hash)
