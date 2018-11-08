@@ -17,6 +17,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SERVER_HOST = 'localhost';
@@ -58,6 +59,7 @@ const styleLoader = (isLoadResources = true) => {
       loader: 'sass-loader',
       options: {
         sourceMap: true,
+        indentedSyntax: true,
         includePaths: [
           path.resolve(__dirname, 'node_modules/'),
           path.resolve(__dirname, 'src'),
@@ -135,6 +137,9 @@ const config = {
           path.resolve(__dirname, 'node_modules'),
         ],
       }, {
+        test: /\.vue$/,
+        use: 'vue-loader',
+      }, {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: [
           {
@@ -193,31 +198,39 @@ const config = {
         exclude: [
           /\.tpl\.pug$/,
         ],
-        use: [
+        oneOf: [
           {
-            loader: 'file-loader',
-            options: {
-              name: '[name].html',
-            },
-          }, {
-            loader: 'extract-loader',
-          }, {
-            loader: 'html-loader',
-            options: {
-              root: path.resolve(__dirname, 'src'),
-              attrs: ['img:src'],
-              interpolate: 'require',
-            },
+            resourceQuery: /^\?vue/,
+            use: ['pug-plain-loader'],
           },
           {
-            loader: 'pug-html-loader',
-            options: {
-              basedir: path.resolve(__dirname, 'src'),
-              pretty: '    ',
-              data: {
-                hash: (new Date()).getTime().toString('16'),
+            use: [
+              {
+                loader: 'file-loader',
+                options: {
+                  name: '[name].html',
+                },
+              }, {
+                loader: 'extract-loader',
+              }, {
+                loader: 'html-loader',
+                options: {
+                  root: path.resolve(__dirname, 'src'),
+                  attrs: ['img:src'],
+                  interpolate: 'require',
+                },
               },
-            },
+              {
+                loader: 'pug-html-loader',
+                options: {
+                  basedir: path.resolve(__dirname, 'src'),
+                  pretty: '    ',
+                  data: {
+                    hash: (new Date()).getTime().toString('16'),
+                  },
+                },
+              },
+            ],
           },
         ],
       },
@@ -255,6 +268,7 @@ const config = {
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
     }),
+    new VueLoaderPlugin(),
   ],
 };
 
