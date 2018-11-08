@@ -185,37 +185,6 @@ const config = {
         use: styleLoader(false),
       },
       {
-        test: /\.njk$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].html',
-            },
-          }, {
-            loader: 'extract-loader',
-          }, {
-            loader: 'html-loader',
-            options: {
-              ignoreCustomFragments: [/\{\{.*?}}/],
-              root: path.resolve(__dirname, 'src'),
-              interpolate: 'require',
-              attrs: ['img:src'],
-            },
-          }, {
-            loader: 'nunjucks-html-loader',
-            options: {
-              searchPaths: [
-                path.resolve(__dirname, 'src'),
-              ],
-              context: {
-                hash: (new Date()).getTime().toString('16'),
-              },
-            },
-          },
-        ],
-      },
-      {
         test: /\.tpl\.pug$/,
         loader: 'pug-loader',
       },

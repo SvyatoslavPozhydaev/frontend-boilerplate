@@ -16,8 +16,6 @@ npm run build   # for build. creating folder "build"
 
 ## HTML Templates 
 
-> Render [Nunjucks](http://mozilla.github.io/nunjucks/) templates
-
 > Render [Pug](https://pugjs.org/api/getting-started.html) templates
 
 ## Structure
