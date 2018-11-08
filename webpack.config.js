@@ -126,7 +126,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(js|es6)$/,
+        test: /\.(js|jsx|es6)$/,
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
@@ -229,7 +229,7 @@ const config = {
       path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, 'src'),
     ],
-    extensions: ['.js', '.es6', '.css', '.scss', '.sass'],
+    extensions: ['*', '.js', '.es6', '.jsx', '.css', '.scss', '.sass'],
   },
 
   devtool: 'source-map',
