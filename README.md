@@ -68,7 +68,6 @@ npm run build   # for build. creating folder "build"
     │           .gitkeep
     │
     ├───layout                                  # base layout and blocks for layout
-    │   │   app.njk
     │   │   app.pug
     │   │   index.js
     │   │
@@ -76,7 +75,6 @@ npm run build   # for build. creating folder "build"
     │   │       index.sass
     │   │
     │   ├───footer
-    │   │       footer.njk
     │   │       footer.pug
     │   │       footer.sass
     │   │       index.js
@@ -85,7 +83,6 @@ npm run build   # for build. creating folder "build"
     │   │       index.sass
     │   │
     │   └───header
-    │           header.njk
     │           header.pug
     │           header.sass
     │           index.js
@@ -94,13 +91,11 @@ npm run build   # for build. creating folder "build"
         │   index.js
         │
         ├───404
-        │       404.njk
         │       404.pug
         │       index.js
         │
         └───home
                 index.js
-                index.njk
                 index.pug
                 index.sass
 
