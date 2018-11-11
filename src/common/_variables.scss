@@ -1,0 +1,31 @@
+// VARIABLE
+
+// FONT FAMILY
+$font-family-base: 'OpenSans', sans-serif;
+
+$font-weight-thin: 100;           // Thin (Hairline)
+$font-weight-extra-light: 200;    // Extra Light (Ultra Light)
+$font-weight-light: 300;          // Light
+$font-weight-normal: 400;         // Regular (normal)
+$font-weight-medium: 500;         // Medium
+$font-weight-semi-bold: 600;      // Semi Bold (Demi Bold)
+$font-weight-bold: 700;           // Bold
+$font-weight-extra-bold: 800;     // Extra Bold (Ultra Bold)
+$font-weight-black: 900;          // Black (Heavy)
+
+$font-weight-base: $font-weight-normal;
+
+// COLOR
+$color-background: #fff;
+$color-text-base: #000;
+
+// FONT SIZE
+$line-height-base: 1.5;
+$font-size-base: 14px;
+
+$h1: $font-size-base * 3;
+$h2: $font-size-base * 2;
+$h3: $font-size-base * 1.5;
+$h4: $font-size-base * 1.3;
+$h5: $font-size-base * 1.2;
+$h6: $font-size-base * 1.1;

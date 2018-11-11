@@ -1,5 +1,5 @@
 <template lang="pug">
-  .app test
+  .test-vue test Vue
 </template>
 
 <script>
@@ -9,6 +9,7 @@
 </script>
 
 <style lang="sass">
-.app
-  background: #f00
+.test-vue
+  background: $color-text-base
+  color: #fff
 </style>

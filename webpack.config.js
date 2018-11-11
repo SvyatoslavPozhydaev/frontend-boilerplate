@@ -24,7 +24,7 @@ const SERVER_HOST = 'localhost';
 const SERVER_PORT = 3000;
 const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
-const styleLoader = (isLoadResources = true) => {
+const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
   const loaders = [
     ExtractCssChunks.loader,
     {
@@ -59,7 +59,7 @@ const styleLoader = (isLoadResources = true) => {
       loader: 'sass-loader',
       options: {
         sourceMap: true,
-        indentedSyntax: true,
+        indentedSyntax: isSassSyntax,
         includePaths: [
           path.resolve(__dirname, 'node_modules/'),
           path.resolve(__dirname, 'src'),
@@ -73,7 +73,7 @@ const styleLoader = (isLoadResources = true) => {
       loader: 'sass-resources-loader',
       options: {
         sourceMap: true,
-        resources: path.resolve(__dirname, 'src', 'common', 'index.sass'),
+        resources: path.resolve(__dirname, 'src', 'common', 'index.scss'),
       },
     });
   }
@@ -136,10 +136,12 @@ const config = {
         exclude: [
           path.resolve(__dirname, 'node_modules'),
         ],
-      }, {
+      },
+      {
         test: /\.vue$/,
         use: 'vue-loader',
-      }, {
+      },
+      {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: [
           {
@@ -152,8 +154,11 @@ const config = {
         exclude: [
           path.resolve(__dirname, 'src', 'fonts'),
           path.resolve(__dirname, 'src', 'images'),
+          /inline/i,
         ],
-      }, {
+      },
+      {
+        // Контентные картинки
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: [
           {
@@ -164,7 +169,17 @@ const config = {
             },
           },
         ],
-        include: [path.resolve(__dirname, 'src', 'images')],
+        include: [
+          path.resolve(__dirname, 'src', 'images'),
+          /inline/i,
+        ],
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader?classPrefix',
+        include: [
+          /inline/i,
+        ],
       },
       {
         test: /\.(woff|woff2|eot|ttf|svg)(\?.*$|$)/,
@@ -179,6 +194,7 @@ const config = {
         include: [
           path.resolve(__dirname, 'node_modules'),
           path.resolve(__dirname, 'src', 'fonts'),
+          /inline/i,
         ],
       },
       {
@@ -186,7 +202,11 @@ const config = {
         use: styleLoader(),
       },
       {
-        test: /\.(css|scss)$/,
+        test: /\.scss$/,
+        use: styleLoader(true, false),
+      },
+      {
+        test: /\.css$/,
         use: styleLoader(false),
       },
       {
@@ -226,7 +246,8 @@ const config = {
                   basedir: path.resolve(__dirname, 'src'),
                   pretty: '    ',
                   data: {
-                    hash: (new Date()).getTime().toString('16'),
+                    hash: (new Date()).getTime()
+                      .toString('16'),
                   },
                 },
               },

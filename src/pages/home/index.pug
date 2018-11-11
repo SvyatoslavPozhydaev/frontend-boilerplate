@@ -3,6 +3,8 @@ extends /layout/app
 block content
   .container
     | CONTENT
+    #test-vue
+    #test-react
     h1 example block
     .block-example(style='height: 100px')
       | Example block
@@ -12,3 +14,4 @@ block content
 
     - var img = 'images/square4.png'
     div(style="background-image: url(${require('" + img + "')}); height: 100px")
+    .test-scss test sass-resources in scss file
