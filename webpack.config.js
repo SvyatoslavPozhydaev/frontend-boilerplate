@@ -22,7 +22,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SERVER_HOST = 'localhost';
 const SERVER_PORT = 3000;
-const ASSET_PATH = IS_PRODUCTION ? '../' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
+const ASSET_PATH = IS_PRODUCTION ? '/' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
 const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
   const loaders = [
@@ -298,7 +298,7 @@ if (IS_PRODUCTION) {
     new CleanWebpackPlugin(['build']),
     new ManifestPlugin({
       fileName: path.resolve(__dirname, 'build', 'manifest.json'),
-      //  publicPath: IS_PRODUCTION ? "/local/templates/hydromax/build/" : ASSET_PATH,
+      publicPath: ASSET_PATH,
       writeToFileEmit: true,
     }),
   );
