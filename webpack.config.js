@@ -207,7 +207,7 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: styleLoader(false),
+        use: styleLoader(false, false),
       },
       {
         test: /\.tpl\.pug$/,
