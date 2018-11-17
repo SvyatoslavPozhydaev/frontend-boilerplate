@@ -171,18 +171,32 @@ const config = {
         ],
         include: [
           path.resolve(__dirname, 'src', 'images'),
+        ],
+        exclude: [
           /inline/i,
         ],
       },
       {
         test: /\.svg$/,
-        loader: 'svg-inline-loader?classPrefix',
+        use: [
+          {
+            loader: 'svg-inline-loader?classPrefix',
+          },
+          {
+            loader: 'svgo-loader',
+            options: {
+              plugins: [
+                { removeViewBox: false },
+              ],
+            },
+          },
+        ],
         include: [
           /inline/i,
         ],
       },
       {
-        test: /\.(woff|woff2|eot|ttf|svg)(\?.*$|$)/,
+        test: /\.(woff|woff2|eot|otf|ttf|svg)(\?.*$|$)/,
         use: [
           {
             loader: 'file-loader',
@@ -194,6 +208,8 @@ const config = {
         include: [
           path.resolve(__dirname, 'node_modules'),
           path.resolve(__dirname, 'src', 'fonts'),
+        ],
+        exclude: [
           /inline/i,
         ],
       },
@@ -210,13 +226,16 @@ const config = {
         use: styleLoader(false, false),
       },
       {
-        test: /\.tpl\.pug$/,
+        test: /\.pug$/,
         loader: 'pug-loader',
+        include: [
+          /inline/i,
+        ],
       },
       {
         test: /\.pug$/,
         exclude: [
-          /\.tpl\.pug$/,
+          /inline/i,
         ],
         oneOf: [
           {
