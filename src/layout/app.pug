@@ -11,10 +11,11 @@ head
   link(rel='stylesheet' href='css/vendors.css?' + hash)
   link(rel='stylesheet' href='css/app.css?' + hash)
 body
-  #root
-    include header/header
-    main
-      block content
+  .wrapper
+    .content
+      include header/header
+      main.main
+        block content
     include footer/footer
   script(src='js/vendors.js?' + hash)
   script(src='js/app.js?' + hash)
