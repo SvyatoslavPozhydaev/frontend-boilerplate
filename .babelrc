@@ -6,7 +6,7 @@
         "targets": {
           "browsers": [
             "last 15 versions",
-            "ie >= 10",
+            "ie >= 9",
             "safari >= 8",
             "ios >= 8"
           ]
@@ -26,6 +26,7 @@
         "useESModules": false
       }
     ],
+    "@babel/plugin-proposal-class-properties",
     "@babel/plugin-syntax-object-rest-spread",
     "@babel/plugin-syntax-dynamic-import"
   ]
