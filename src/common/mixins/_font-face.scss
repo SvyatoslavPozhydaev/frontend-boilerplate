@@ -16,7 +16,7 @@
 // Font Face
 // =============================================================================
 
-@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff otf ttf svg) {
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: woff2 woff otf ttf) {
   $src: null;
 
   $extmods: (
