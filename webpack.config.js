@@ -128,18 +128,17 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        use: 'vue-loader',
+      },
+      {
         test: /\.(js|jsx|es6)$/,
         loader: 'babel-loader',
         options: {
           cacheDirectory: true,
+          configFile: path.resolve(__dirname, 'babel.config.js'),
         },
-        exclude: [
-          path.resolve(__dirname, 'node_modules'),
-        ],
-      },
-      {
-        test: /\.vue$/,
-        use: 'vue-loader',
+        exclude: file => /node_modules/.test(file) && !/\.vue\.js/.test(file),
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
@@ -265,8 +264,7 @@ const config = {
                   basedir: path.resolve(__dirname, 'src'),
                   pretty: '    ',
                   data: {
-                    hash: (new Date()).getTime()
-                      .toString('16'),
+                    hash: (new Date()).getTime().toString('16'),
                   },
                 },
               },
@@ -282,6 +280,9 @@ const config = {
       path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, 'src'),
     ],
+    // alias: {
+    //   vue$: 'vue/dist/vue.common.js',
+    // },
     extensions: ['*', '.js', '.es6', '.jsx', '.vue', '.css', '.scss', '.sass'],
   },
 
@@ -322,6 +323,5 @@ if (IS_PRODUCTION) {
     }),
   );
 }
-
 
 module.exports = config;
