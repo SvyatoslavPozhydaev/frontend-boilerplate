@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "frontend boilerplate",
   "scripts": {
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --open --progress",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --inline --open --progress",
     "start": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --open --progress",
     "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress",
     "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress"
