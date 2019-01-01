@@ -1,3 +1,11 @@
+import 'core-js/es6/promise';
+
+// for hot reload in ie10 ie11
+import 'core-js/es6/symbol';
+import 'core-js/es6/array';
+import 'url-polyfill';
+// ===========================
+
 import $ from 'jquery';
 
 // Uncomment for use BOOTSTAP4

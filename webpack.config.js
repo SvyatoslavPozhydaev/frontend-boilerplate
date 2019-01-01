@@ -134,6 +134,16 @@ const config = {
         exclude: file => /node_modules/.test(file) && !/\.vue\.js/.test(file),
       },
       {
+        test: /\.(js|jsx|es6)$/,
+        loader: 'babel-loader',
+        options: {
+          configFile: path.resolve(__dirname, 'babel.node.config.js'),
+        },
+        include: [
+          /normalize-url/i,
+        ],
+      },
+      {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
         use: [
           {
