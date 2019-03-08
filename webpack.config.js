@@ -26,7 +26,16 @@ const ASSET_PATH = IS_PRODUCTION ? '/' : `http://${SERVER_HOST}:${SERVER_PORT}/`
 
 const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
   const loaders = [
-    ExtractCssChunks.loader,
+    {
+      loader: ExtractCssChunks.loader,
+      options: {
+        // if you want HMR - we try to automatically inject hot
+        // reloading but if it's not working, add it to the config
+        hot: !IS_PRODUCTION,
+        // modules: true, // if you use cssModules, this can help.
+        // reloadAll: true, // when desperation kicks in - this is a brute force HMR flag
+      },
+    },
     {
       loader: 'css-loader',
       options: {
@@ -132,16 +141,6 @@ const config = {
           configFile: path.resolve(__dirname, 'babel.config.js'),
         },
         exclude: file => /node_modules/.test(file) && !/\.vue\.js/.test(file),
-      },
-      {
-        test: /\.(js|jsx|es6)$/,
-        loader: 'babel-loader',
-        options: {
-          configFile: path.resolve(__dirname, 'babel.node.config.js'),
-        },
-        include: [
-          /normalize-url/i,
-        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
@@ -327,7 +326,6 @@ const config = {
     new ExtractCssChunks({
       filename: 'css/[name].css',
       chunkFilename: 'css/[name].css',
-      hot: IS_PRODUCTION,
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) },
@@ -343,7 +341,7 @@ const config = {
 
 if (IS_PRODUCTION) {
   config.plugins.push(
-    new CleanWebpackPlugin(['build']),
+    new CleanWebpackPlugin(),
     new ManifestPlugin({
       fileName: path.resolve(__dirname, 'build', 'manifest.json'),
       publicPath: ASSET_PATH,
