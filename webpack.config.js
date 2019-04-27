@@ -19,11 +19,29 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
+/**
+ * Webpack server config
+ */
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const SERVER_HOST = 'localhost';
 const SERVER_PORT = 3000;
-const ASSET_PATH = IS_PRODUCTION ? '/' : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
+/**
+ * Webpack config variables
+ */
+const PATH_BASE = '/';
+const PATH_ASSET = IS_PRODUCTION ? PATH_BASE : `http://${SERVER_HOST}:${SERVER_PORT}${PATH_BASE}`;
+const PATH_SRC = path.resolve(__dirname, 'src');
+const PATH_BUILD = path.resolve(__dirname, 'build');
+const PATH_PUBLIC = path.resolve(__dirname, 'build');
+
+/**
+ * Функция обработки файлов стилей
+ *
+ * @param {boolean} isLoadResources - флаг использования sass-resources-loader
+ * @param {boolean} isSassSyntax - флаг использования синтаксиса sass
+ * @returns {any[]}
+ */
 const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
   const loaders = [
     {
@@ -51,9 +69,7 @@ const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
             postCssFlexBugsFixes(),
             postCssPresetEnv(),
             postCssUrl(),
-            postCssAutoprefixer({
-              browsers: ['ie >= 9', 'last 4 version', '> 1%', 'safari >= 9', 'ios >= 9'],
-            }),
+            postCssAutoprefixer(),
           );
           if (IS_PRODUCTION) {
             plugins.push(
@@ -71,7 +87,7 @@ const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
         indentedSyntax: isSassSyntax,
         includePaths: [
           path.resolve(__dirname, 'node_modules/'),
-          path.resolve(__dirname, 'src'),
+          PATH_SRC,
         ],
       },
     },
@@ -82,7 +98,7 @@ const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
       loader: 'sass-resources-loader',
       options: {
         sourceMap: true,
-        resources: path.resolve(__dirname, 'src', 'common', 'index.scss'),
+        resources: path.resolve(PATH_SRC, 'common', 'index.scss'),
       },
     });
   }
@@ -92,15 +108,15 @@ const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
 
 const config = {
   mode: process.env.NODE_ENV,
-  context: path.resolve(__dirname, 'src'),
+  context: PATH_SRC,
   entry: {
-    app: [path.resolve(__dirname, 'src', 'index.js')],
+    app: [path.resolve(PATH_SRC, 'index.js')],
   },
   output: {
-    filename: 'js/[name].js',
-    path: path.resolve(__dirname, 'build'),
-    publicPath: ASSET_PATH,
-    chunkFilename: 'js/[name].js',
+    filename: 'js/[name].js?[hash]',
+    chunkFilename: 'js/[name].js?[hash]',
+    path: PATH_BUILD,
+    publicPath: PATH_ASSET,
   },
   optimization: {
     minimizer: [
@@ -153,8 +169,8 @@ const config = {
           },
         ],
         exclude: [
-          path.resolve(__dirname, 'src', 'fonts'),
-          path.resolve(__dirname, 'src', 'images'),
+          path.resolve(PATH_SRC, 'fonts'),
+          path.resolve(PATH_SRC, 'images'),
           /inline/i,
         ],
       },
@@ -171,7 +187,7 @@ const config = {
           },
         ],
         include: [
-          path.resolve(__dirname, 'src', 'images'),
+          path.resolve(PATH_SRC, 'images'),
         ],
         exclude: [
           /inline/i,
@@ -181,7 +197,7 @@ const config = {
         test: /\.svg$/,
         use: [
           {
-            loader: 'svg-inline-loader?classPrefix',
+            loader: 'svg-inline-loader',
           },
           {
             loader: 'svgo-loader',
@@ -208,7 +224,7 @@ const config = {
         ],
         include: [
           path.resolve(__dirname, 'node_modules'),
-          path.resolve(__dirname, 'src', 'fonts'),
+          path.resolve(PATH_SRC, 'fonts'),
         ],
         exclude: [
           /inline/i,
@@ -255,7 +271,7 @@ const config = {
               }, {
                 loader: 'html-loader',
                 options: {
-                  root: path.resolve(__dirname, 'src'),
+                  root: path.resolve(PATH_SRC),
                   attrs: ['img:src'],
                   interpolate: 'require',
                 },
@@ -263,7 +279,7 @@ const config = {
               {
                 loader: 'pug-html-loader',
                 options: {
-                  basedir: path.resolve(__dirname, 'src'),
+                  basedir: path.resolve(PATH_SRC),
                   pretty: '    ',
                   data: {
                     hash: (new Date()).getTime().toString('16'),
@@ -281,7 +297,7 @@ const config = {
     modules: [
       'node_modules', // нужно чтоб правильно разрешались зависимости в пакетах, если пакет требудет другую версию
       path.resolve(__dirname, 'node_modules'),
-      path.resolve(__dirname, 'src'),
+      path.resolve(PATH_SRC),
     ],
     // alias: {
     //   vue$: 'vue/dist/vue.common.js',
@@ -319,13 +335,13 @@ const config = {
     host: SERVER_HOST,
     port: SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.resolve(__dirname, 'src'),
+    contentBase: path.resolve(PATH_SRC),
   },
 
   plugins: [
     new ExtractCssChunks({
-      filename: 'css/[name].css',
-      chunkFilename: 'css/[name].css',
+      filename: 'css/[name].css?[hash]',
+      chunkFilename: 'css/[name].css?[hash]',
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) },
@@ -343,8 +359,8 @@ if (IS_PRODUCTION) {
   config.plugins.push(
     new CleanWebpackPlugin(),
     new ManifestPlugin({
-      fileName: path.resolve(__dirname, 'build', 'manifest.json'),
-      publicPath: ASSET_PATH,
+      fileName: path.resolve(PATH_PUBLIC, 'manifest.json'),
+      publicPath: PATH_ASSET,
       writeToFileEmit: true,
     }),
   );

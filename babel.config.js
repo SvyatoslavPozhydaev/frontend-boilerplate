@@ -9,15 +9,8 @@ module.exports = function (api) {
       [
         '@babel/env',
         {
-          targets: {
-            browsers: [
-              'last 15 versions',
-              'ie >= 9',
-              'safari >= 8',
-              'ios >= 8',
-            ],
-          },
           modules: false,
+          corejs: 3,
           useBuiltIns: 'usage',
         },
       ],

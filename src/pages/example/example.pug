@@ -1,0 +1,17 @@
+extends /layout/app
+
+block content
+  .container.example-page
+    | CONTENT
+    #test-vue
+    #test-react
+    h1 example block
+    .block-example(style='height: 100px')
+      | Example block
+    h1 example require image
+    img(src='images/square.png' alt='')
+    div(style="background-image: url(${require('images/square3.png')}); height: 100px")
+
+    - var img = 'images/square4.png'
+    div(style="background-image: url(${require('" + img + "')}); height: 100px")
+    .test-scss test sass-resources in scss file
