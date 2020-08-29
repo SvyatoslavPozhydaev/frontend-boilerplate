@@ -14,7 +14,7 @@ const postCssFlexBugsFixes = require('postcss-flexbugs-fixes');
  * Webpack plugins
  */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -123,15 +123,10 @@ const config = {
     publicPath: PATH_PUBLIC,
   },
   optimization: {
+    minimize: IS_PRODUCTION,
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         sourceMap: true,
-        uglifyOptions: {
-          sourceMap: true,
-          output: {
-            comments: false,
-          },
-        },
       }),
     ],
     splitChunks: {
