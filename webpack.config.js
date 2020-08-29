@@ -13,7 +13,7 @@ const postCssFlexBugsFixes = require('postcss-flexbugs-fixes');
 /**
  * Webpack plugins
  */
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -29,20 +29,20 @@ const SERVER_PORT = 3000;
 /**
  * Webpack config variables
  */
-const PATH_BASE = '/';
-const PATH_ASSET = IS_PRODUCTION ? PATH_BASE : `http://${SERVER_HOST}:${SERVER_PORT}${PATH_BASE}`;
+const IS_LOCAL_BUILD = true;
 const PATH_SRC = path.resolve(__dirname, 'src');
 const PATH_BUILD = path.resolve(__dirname, 'build');
-const PATH_PUBLIC = path.resolve(__dirname, 'build');
+const PATH_BASE = 'webpack/';
+const PATH_PUBLIC_BUILD = IS_LOCAL_BUILD ? '../../' : '/';
+const PATH_PUBLIC = IS_PRODUCTION ? PATH_PUBLIC_BUILD : `http://${SERVER_HOST}:${SERVER_PORT}/`;
 
 /**
  * Функция обработки файлов стилей
  *
- * @param {boolean} isLoadResources - флаг использования sass-resources-loader
- * @param {boolean} isSassSyntax - флаг использования синтаксиса sass
+ * @param {'css'|'sass'|'scss'} syntax
  * @returns {any[]}
  */
-const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
+const styleLoader = (syntax) => {
   const loaders = [
     {
       loader: ExtractCssChunks.loader,
@@ -84,16 +84,20 @@ const styleLoader = (isLoadResources = true, isSassSyntax = true) => {
       loader: 'sass-loader',
       options: {
         sourceMap: true,
-        indentedSyntax: isSassSyntax,
-        includePaths: [
-          path.resolve(__dirname, 'node_modules/'),
-          PATH_SRC,
-        ],
-      },
+        sassOptions: {
+          fiber: false,
+          indentedSyntax: syntax === 'sass',
+          includePaths: [
+            path.resolve(__dirname, 'node_modules/'),
+            PATH_SRC,
+          ],
+        },
+      }
+      ,
     },
   ];
 
-  if (isLoadResources) {
+  if (syntax !== 'css') {
     loaders.push({
       loader: 'sass-resources-loader',
       options: {
@@ -113,10 +117,10 @@ const config = {
     app: [path.resolve(PATH_SRC, 'index.js')],
   },
   output: {
-    filename: 'js/[name].js?[hash]',
-    chunkFilename: 'js/[name].js?[hash]',
+    filename: `${PATH_BASE}js/[name].js?[hash]`,
+    chunkFilename: `${PATH_BASE}js/[name].js?[hash]`,
     path: PATH_BUILD,
-    publicPath: PATH_ASSET,
+    publicPath: PATH_PUBLIC,
   },
   optimization: {
     minimizer: [
@@ -156,7 +160,7 @@ const config = {
         options: {
           configFile: path.resolve(__dirname, 'babel.config.js'),
         },
-        exclude: file => /node_modules/.test(file) && !/\.vue\.js/.test(file),
+        exclude: (file) => /node_modules/.test(file) && !/\.vue\.js/.test(file),
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,
@@ -164,7 +168,8 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: 'images/[name]-[hash:8].[ext]',
+              name: `${PATH_BASE}images/[name]-[hash:8].[ext]`,
+              esModule: false,
             },
           },
         ],
@@ -181,8 +186,9 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: 'images/[name]-[hash:8].[ext]',
+              name: `${PATH_BASE}images/[name]-[hash:8].[ext]`,
               publicPath: './',
+              esModule: false,
             },
           },
         ],
@@ -218,7 +224,8 @@ const config = {
           {
             loader: 'file-loader',
             options: {
-              name: 'fonts/[name]-[hash:8].[ext]',
+              name: `${PATH_BASE}fonts/[name]-[hash:8].[ext]`,
+              esModule: false,
             },
           },
         ],
@@ -232,15 +239,15 @@ const config = {
       },
       {
         test: /\.sass$/,
-        use: styleLoader(),
+        use: styleLoader('sass'),
       },
       {
         test: /\.scss$/,
-        use: styleLoader(true, false),
+        use: styleLoader('scss'),
       },
       {
         test: /\.css$/,
-        use: styleLoader(false, false),
+        use: styleLoader('css'),
       },
       {
         test: /\.pug$/,
@@ -265,20 +272,22 @@ const config = {
                 loader: 'file-loader',
                 options: {
                   name: '[name].html',
+                  esModule: false,
                 },
               }, {
                 loader: 'extract-loader',
               }, {
                 loader: 'html-loader',
                 options: {
-                  root: path.resolve(PATH_SRC),
+                  root: PATH_SRC,
                   attrs: ['img:src'],
                   interpolate: 'require',
                 },
               },
               {
-                loader: 'pug-html-loader',
+                loader: 'pug-plain-loader',
                 options: {
+                  doctype: 'html',
                   basedir: path.resolve(PATH_SRC),
                   pretty: '    ',
                   data: {
@@ -320,28 +329,17 @@ const config = {
   },
 
   devServer: {
-    stats: {
-      // copied from `'minimal'`
-      all: false,
-      modules: true,
-      maxModules: 0,
-      errors: true,
-      warnings: true,
-      // our additional options
-      moduleTrace: true,
-      errorDetails: true,
-    },
     clientLogLevel: 'error',
     host: SERVER_HOST,
     port: SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.resolve(PATH_SRC),
+    contentBase: PATH_SRC,
   },
 
   plugins: [
     new ExtractCssChunks({
-      filename: 'css/[name].css?[hash]',
-      chunkFilename: 'css/[name].css?[hash]',
+      filename: `${PATH_BASE}css/[name].css?[hash]`,
+      chunkFilename: `${PATH_BASE}css/[name].css?[hash]`,
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify(process.env.NODE_ENV) },
@@ -359,9 +357,11 @@ if (IS_PRODUCTION) {
   config.plugins.push(
     new CleanWebpackPlugin(),
     new ManifestPlugin({
-      fileName: path.resolve(PATH_PUBLIC, 'manifest.json'),
-      publicPath: PATH_ASSET,
+      fileName: path.resolve(PATH_BUILD, 'manifest.json'),
+      basePath: PATH_BASE,
+      publicPath: '/',
       writeToFileEmit: true,
+      filter: (fileDescr) => fileDescr.isInitial,
     }),
   );
 }
