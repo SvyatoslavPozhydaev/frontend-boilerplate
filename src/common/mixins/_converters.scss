@@ -1,0 +1,7 @@
+@function px-to-vh($sizeBase, $sizeScreen) {
+  @return ($sizeBase / $sizeScreen) * 100vh
+}
+
+@function px-to-vw($sizeBase, $sizeScreen) {
+  @return ($sizeBase / $sizeScreen) * 100vw
+}
