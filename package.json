@@ -41,7 +41,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
     "postcss-url": "^8.0.0",
-    "pug": "^3.0.0",
+    "pug": "^3.0.1",
     "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",
     "react": "^16.13.1",
