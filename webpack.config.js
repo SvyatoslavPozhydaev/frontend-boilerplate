@@ -16,8 +16,10 @@ const postCssFlexBugsFixes = require('postcss-flexbugs-fixes');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
+const PugHtmlPreprocessor = require('./pug-html-preprocessor');
 
 /**
  * Webpack server config
@@ -63,21 +65,23 @@ const styleLoader = (syntax) => {
       loader: 'postcss-loader',
       options: {
         sourceMap: true,
-        plugins: ((() => {
-          const plugins = [];
-          plugins.push(
-            postCssFlexBugsFixes(),
-            postCssPresetEnv(),
-            postCssUrl(),
-            postCssAutoprefixer(),
-          );
-          if (IS_PRODUCTION) {
+        postcssOptions: {
+          plugins: ((() => {
+            const plugins = [];
             plugins.push(
-              postCssCssNano(),
+              postCssFlexBugsFixes(),
+              postCssPresetEnv(),
+              postCssUrl(),
+              postCssAutoprefixer(),
             );
-          }
-          return plugins;
-        })()),
+            if (IS_PRODUCTION) {
+              plugins.push(
+                postCssCssNano(),
+              );
+            }
+            return plugins;
+          })()),
+        },
       },
     },
     {
@@ -126,7 +130,7 @@ const config = {
     minimize: IS_PRODUCTION,
     minimizer: [
       new TerserPlugin({
-        sourceMap: true,
+        extractComments: false,
       }),
     ],
     splitChunks: {
@@ -182,7 +186,7 @@ const config = {
             loader: 'file-loader',
             options: {
               name: `${PATH_BASE}images/[name]-[hash:8].[ext]`,
-              publicPath: './',
+              publicPath: IS_PRODUCTION ? './' : undefined,
               esModule: false,
             },
           },
@@ -271,23 +275,20 @@ const config = {
                 },
               }, {
                 loader: 'extract-loader',
-              }, {
-                loader: 'html-loader',
-                options: {
-                  root: PATH_SRC,
-                  attrs: ['img:src'],
-                  interpolate: 'require',
-                },
               },
               {
-                loader: 'pug-plain-loader',
+                loader: 'html-loader',
                 options: {
-                  doctype: 'html',
-                  basedir: path.resolve(PATH_SRC),
-                  pretty: '    ',
-                  data: {
-                    hash: (new Date()).getTime().toString('16'),
-                  },
+                  preprocessor: PugHtmlPreprocessor({
+                    basedir: PATH_SRC,
+                    locals: {
+                      hash: (new Date()).getTime()
+                        .toString('16'),
+                    },
+                  }),
+                  sources: false,
+                  minimize: false,
+                  esModule: false,
                 },
               },
             ],
@@ -309,13 +310,12 @@ const config = {
     extensions: ['*', '.js', '.es6', '.jsx', '.vue', '.css', '.scss', '.sass'],
   },
 
-  devtool: IS_PRODUCTION ? 'none' : 'inline-cheap-source-map',
+  devtool: IS_PRODUCTION ? false : 'inline-source-map',
 
   stats: {
     // copied from `'minimal'`
     all: false,
     modules: true,
-    maxModules: 0,
     errors: true,
     warnings: true,
     // our additional options
@@ -324,11 +324,12 @@ const config = {
   },
 
   devServer: {
-    clientLogLevel: 'error',
+    static: PATH_SRC, // https://github.com/webpack/webpack-dev-server/issues/2958#issuecomment-757141969
     host: SERVER_HOST,
     port: SERVER_PORT,
+    hot: true,
+    liveReload: false,
     headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: PATH_SRC,
   },
 
   plugins: [
@@ -351,9 +352,9 @@ const config = {
 if (IS_PRODUCTION) {
   config.plugins.push(
     new CleanWebpackPlugin(),
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       fileName: path.resolve(PATH_BUILD, 'manifest.json'),
-      basePath: PATH_BASE,
+      // basePath: PATH_BASE,
       publicPath: '/',
       writeToFileEmit: true,
       filter: (fileDescr) => fileDescr.isInitial,

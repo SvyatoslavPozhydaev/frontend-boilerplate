@@ -5,13 +5,13 @@
 $ git clone 
 $ rm -rf .git
 $ git init
-$ npm install
+$ yarn install
 ```
 
 ## Develop
 ```sh
-npm start       # for developing and   open  localhost:3000
-npm run build   # for build. creating folder "build"
+yarn start       # for developing and   open  localhost:3000
+yarn build       # for build. creating folder "build"
 ```
 
 ## HTML Templates 

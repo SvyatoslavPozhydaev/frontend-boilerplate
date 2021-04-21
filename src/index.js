@@ -1,5 +1,3 @@
-import 'core-js/es/promise';
-
 import $ from 'jquery';
 
 // Uncomment for use BOOTSTAP4

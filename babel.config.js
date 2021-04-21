@@ -7,7 +7,7 @@ module.exports = function (api) {
     comments: false,
     presets: [
       [
-        '@babel/env',
+        '@babel/preset-env',
         {
           modules: false,
           corejs: 3,
