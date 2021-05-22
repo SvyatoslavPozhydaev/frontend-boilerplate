@@ -12,6 +12,7 @@ module.exports = ({ basedir, locals }) => {
         pretty: '    ',
         inlineRuntimeFunctions: false,
       });
+      render.dependencies.forEach(loaderContext.addDependency);
       result = render({
         require: (pathRequire) => {
           if (!files[pathRequire]) {
