@@ -10,6 +10,7 @@ module.exports = ({ basedir, locals }) => {
         doctype: 'html',
         basedir,
         pretty: '    ',
+        filename: loaderContext.resourcePath,
         inlineRuntimeFunctions: false,
       });
       render.dependencies.forEach(loaderContext.addDependency);
