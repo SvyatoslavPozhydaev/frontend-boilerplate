@@ -1,10 +1,10 @@
 const pug = require('pug');
 
 module.exports = ({ basedir, locals }) => {
-  const files = {};
   const regexpSrc = /module\.exports = (.+)?"(.+)?";/;
   return async (content, loaderContext) => {
     let result;
+    const files = {};
     try {
       const render = pug.compile(content, {
         doctype: 'html',
